@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <category
+            name="ISIS"
+            id="importpatch.importWizards.sampleCategory">
+      </category>
+      <wizard
+            name="Import Patch File"
+            icon="icons/bandaid.gif"
+            category="importpatch.importWizards.sampleCategory"
+            class="importpatch.importWizards.ImportPatchWizard"
+            id="importpatch.importWizards.ImporPatchtWizard">
+         <description>
+            Import a file from the local file system into the workspace.
+         </description>
+      </wizard>
+   </extension>
+
+</plugin>

@@ -1,13 +1,15 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Visualiser Plug-in
-Bundle-SymbolicName: Visualiser;singleton:=true
+Bundle-Name: PatchEditor Plug-in
+Bundle-SymbolicName: eclippers.patch.editor;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: visualiser.VisualiserPlugin
+Bundle-Activator: patcheditor.PatchEditorPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.workbench.texteditor,
  org.eclipse.core.resources,
- org.eclipse.contribution.visualiser;bundle-version="2.2.0"
+ org.eclipse.ui.ide
 Eclipse-LazyStart: true

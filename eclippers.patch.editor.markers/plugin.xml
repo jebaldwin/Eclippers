@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+     
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="PatchedGutterAnnotations.actionSet"
+            label="Refresh Patch Markers"
+            visible="true">
+         <action
+               class="textmarker.actions.AddMarkerAction"
+               icon="icons/reset.gif"
+               id="textmarker.actions.AddMarkerAction"
+               label="Refresh Patch Markers"
+               menubarPath="sampleMenu/sampleGroup"
+               toolbarPath="sampleGroup"
+               tooltip="Refresh Patch Markers"/>
+      </actionSet>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            markerType="patchAppliesMarker"
+            name="patchAppliesAnnotation"
+            super="org.eclipse.ui.workbench.texteditor.warning"/>
+  </extension>
+  <extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      <specification
+            annotationType="patchAppliesAnnotation"
+            icon="icons/applies.gif"
+            label="Patch Applies "
+            overviewRulerPreferenceValue="true"/>
+   </extension> 
+
+</plugin>
