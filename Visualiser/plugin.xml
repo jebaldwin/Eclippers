@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.contribution.visualiser.providers">
+      <provider
+            contentProviderClass="visualiser.provider.PatchContentProvider"
+            description="Provider that shows patch file markers in the visualiser"
+            emptyMessage="No patch information to show."
+            id="PatchProvider"
+            markupProviderClass="visualiser.provider.PatchMarkupProvider"
+            name="Patch-based provider"
+            priority="0"/>
+   </extension>
+
+</plugin>
