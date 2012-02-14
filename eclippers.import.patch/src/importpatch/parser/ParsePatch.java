@@ -37,16 +37,15 @@ public class ParsePatch {
 	
 	private static String WORKSPACE_PATH = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 
-	public static void parse(String pathName, String fileName)
-			throws IOException {
+	public static void parse(String pathName, String fileName, IProject proj) throws IOException {
 		int index = pathName.indexOf(fileName);
 		File xmlFile = new File(pathName.substring(0, index) + XML_FILE);
 		xmlFile.createNewFile();
 		File patchFile = new File(pathName);
-		parseToXML(patchFile, xmlFile);
+		parseToXML(patchFile, xmlFile, proj);
 	}
 
-	private static void parseToXML(File patchFile, File xmlFile) {
+	private static void parseToXML(File patchFile, File xmlFile, IProject proj) {
 
 		BufferedReader input = null;
 		BufferedWriter output = null;
@@ -82,7 +81,7 @@ public class ParsePatch {
 					modSection = null;
 
 					// need to get length of file
-					int length = getFileLength(fileName);
+					int length = getFileLength(fileName, proj);
 					String[] results = splitPath(fileName);
 					String packageName = results[0];
 					fileName = results[1];
@@ -188,7 +187,9 @@ public class ParsePatch {
 
 	private static String[] splitPath(String fileName) {
 		String[] array = new String[2];
-		int index = fileName.lastIndexOf(File.separator);
+		
+		//Patch format for separator
+		int index = fileName.lastIndexOf("/");
 		String packageName = fileName.substring(0, index);
 		String file = fileName.substring(index + 1);
 		index = file.indexOf('.');
@@ -201,13 +202,11 @@ public class ParsePatch {
 		return array;
 	}
 
-	private static int getFileLength(String fileName) {
-		IProject[] projs = ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects();
-		String path = WORKSPACE_PATH + File.separator + projs[0].getName() + File.separator + fileName;
+	private static int getFileLength(String fileName, IProject proj) {
+		String path = WORKSPACE_PATH + File.separator + proj.getName() + File.separator + fileName;
 		File countFile = new File(path);
 		int count = 0;
-		String in;
+		String in = null;
 
 		BufferedReader read;
 		try {

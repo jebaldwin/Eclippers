@@ -5,7 +5,7 @@
    <extension
          point="org.eclipse.ui.importWizards">
       <category
-            name="ISIS"
+            name="Eclippers"
             id="importpatch.importWizards.sampleCategory">
       </category>
       <wizard
