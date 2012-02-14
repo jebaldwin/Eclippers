@@ -6,8 +6,8 @@ public class RunXSL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ConvertXMLtoMVIS.convertContentVis();
-		ConvertXMLtoMVIS.convertMarkupVis();
+		//ConvertXMLtoMVIS.convertContentVis();
+		//ConvertXMLtoMVIS.convertMarkupVis();
 	}
 
 }

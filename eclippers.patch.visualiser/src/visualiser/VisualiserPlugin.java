@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
 public class VisualiserPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "Visualiser";
+	public static final String PLUGIN_ID = "eclippers.patch.visualiser";
 
 	// The shared instance
 	private static VisualiserPlugin plugin;

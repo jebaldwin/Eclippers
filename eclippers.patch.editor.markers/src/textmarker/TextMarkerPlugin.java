@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class TextMarkerPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "PatchedGutterAnnotations";
+	public static final String PLUGIN_ID = "eclippers.patch.editor.markers";
 
 	// The shared instance
 	private static TextMarkerPlugin plugin;

@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
 public class Importer extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "ImportPatch";
+	public static final String PLUGIN_ID = "eclippers.import.patch";
 
 	// The shared instance
 	private static Importer plugin;

@@ -7,6 +7,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,10 +18,11 @@ import textmarker.add.AddMarkers;
 
 public class ParseXMLForMarkers {
 	
-	private static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
+	public static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 
-	public static void parseXML() {
-		File xmlFile = new File(WORKSPACE_ROOT + File.separator + "JHotDraw" + File.separator + "patchData.xml");
+	public static void parseXML(IProject proj) {
+
+		File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patchData.xml");
 
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -47,7 +49,7 @@ public class ParseXMLForMarkers {
 							filePath = filePath.replaceAll("\\.", "/");
 							String fullPath = filePath + File.separator + fileName;
 							
-							AddMarkers.clearMarkers(fullPath, patchName);
+							AddMarkers.clearMarkers(fullPath, patchName, proj);
 							
 							NodeList n3 = fileElement.getElementsByTagName("offset");
 							if(n3 != null && n3.getLength() > 0) {
@@ -56,7 +58,8 @@ public class ParseXMLForMarkers {
 									int lineNumber = Integer.parseInt(offsetElement.getAttribute("start"));
 									int length = Integer.parseInt(offsetElement.getAttribute("length"));;
 
-									AddMarkers.addMarkerToFile(patchName, fullPath, lineNumber, length);
+									//TODO figure out which style to use - patched or not patched
+									AddMarkers.addMarkerToFile(patchName, fullPath, lineNumber, length, proj);
 								}
 							}
 						}

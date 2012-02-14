@@ -1,13 +1,16 @@
 package textmarker.actions;
 
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 
 import textmarker.parse.ParseXMLForMarkers;
 
@@ -34,7 +37,10 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		
+		//TODO refresh open file markers
+		IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
+		IProject proj = ((FileEditorInput)ei).getFile().getProject();
+		ParseXMLForMarkers.parseXML(proj);
 	}
 
 	/**
@@ -45,7 +51,18 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#selectionChanged
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
-		ParseXMLForMarkers.parseXML();
+		if (selection instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) selection).getFirstElement();
+			
+			if (selected instanceof IResource) {
+				IResource resource = (IResource) selected;
+				ParseXMLForMarkers.parseXML(resource.getProject());
+			}
+		} else if (selection instanceof TextSelection) {
+			IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
+			IProject proj = ((FileEditorInput)ei).getFile().getProject();
+			ParseXMLForMarkers.parseXML(proj);
+		}
 	}
 	
 

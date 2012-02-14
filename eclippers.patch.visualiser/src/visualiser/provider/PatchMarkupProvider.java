@@ -17,8 +17,11 @@ import org.eclipse.contribution.visualiser.interfaces.IMarkupKind;
 import org.eclipse.contribution.visualiser.interfaces.IMarkupProvider;
 import org.eclipse.contribution.visualiser.simpleImpl.SimpleMarkupKind;
 import org.eclipse.contribution.visualiser.simpleImpl.SimpleMarkupProvider;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -38,11 +41,11 @@ public class PatchMarkupProvider extends SimpleMarkupProvider implements
 	public void initialise() {
 		kinds = new HashMap();
 
-		ConvertXMLtoMVIS.convertContentVis();
-		ConvertXMLtoMVIS.convertMarkupVis();
+		//TODO did I need these?
+		//ConvertXMLtoMVIS.convertContentVis();
+		//ConvertXMLtoMVIS.convertMarkupVis();
 
-		if (VisualiserPlugin.getDefault().getWorkbench()
-				.getActiveWorkbenchWindow() != null) {
+		if (VisualiserPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() != null) {
 			VisualiserPlugin.getDefault().getWorkbench()
 					.getActiveWorkbenchWindow().getSelectionService()
 					.addSelectionListener(this);
@@ -149,6 +152,28 @@ public class PatchMarkupProvider extends SimpleMarkupProvider implements
 	}
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		//TODO fix this!
+		IProject proj = null;
+		
+		if (selection instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) selection).getFirstElement();
+			
+			if (selected instanceof IResource) {
+				IResource resource = (IResource) selected;
+				proj = resource.getProject();
+			}
+			
+			/*if (selected instanceof IJavaProject)
+				return ((IJavaProject) selected).getProject();
+			else if (selected instanceof IResource) {
+				IResource resource = (IResource) selected;
+				return resource.getProject();
+			} else if (selected instanceof ICompilationUnit) {
+				ICompilationUnit cu = (ICompilationUnit) selected;
+				return cu.getJavaProject().getProject();
+			}*/
+		}
+		
 		if (selection.toString().indexOf("patchData.xml") >= 0
 				|| selection.toString().indexOf("patch") >= 0
 				|| selection.toString().indexOf("vis") >= 0
@@ -156,12 +181,11 @@ public class PatchMarkupProvider extends SimpleMarkupProvider implements
 
 			resetMarkupsAndKinds();
 
-			ConvertXMLtoMVIS.convertContentVis();
-			ConvertXMLtoMVIS.convertMarkupVis();
+			ConvertXMLtoMVIS.convertContentVis(proj);
+			ConvertXMLtoMVIS.convertMarkupVis(proj);
 
 			try {
-				//TODO fix this!
-				File fileURL = new File(WORKSPACE_ROOT + File.separator + "JHotDraw" + File.separator + "Markup.mvis");
+				File fileURL = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Markup.mvis");
 				InputStream in = new FileInputStream(fileURL);
 				loadMarkups(in);
 				in.close();
