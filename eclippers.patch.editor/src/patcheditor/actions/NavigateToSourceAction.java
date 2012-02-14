@@ -16,7 +16,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import patcheditor.PatchEditorPlugin;
-import patcheditor.editors.PatchEditor;
+import textmarker.parse.ParseXMLForMarkers;
 
 public class NavigateToSourceAction {
 
@@ -42,10 +42,13 @@ public class NavigateToSourceAction {
 
 	private static void openFile(String fileName, int lineNumber, String projectName) {
 
-		IProject projs = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);//.getProjects();
-		IPath path = new Path(projs.getName() + File.separator +  fileName);
+		IProject proj = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);//.getProjects();
+		IPath path = new Path(proj.getName() + File.separator +  fileName);
 		
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+		
+		//TODO fix - base this on whether patched or not
+		ParseXMLForMarkers.parseXML(proj);
 		
 		try {
 			ITextEditor editor = (ITextEditor) IDE.openEditor(PatchEditorPlugin

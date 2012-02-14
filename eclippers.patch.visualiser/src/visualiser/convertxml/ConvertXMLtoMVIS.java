@@ -12,6 +12,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 
 public class ConvertXMLtoMVIS {
@@ -20,10 +21,10 @@ public class ConvertXMLtoMVIS {
 	private static final String CONTENT_XSL = "convertXMLtoContent.xsl";
 	private static final String MARKUP_XSL = "convertXMLtoMarkup.xsl";
 
-	public static void convertContentVis() {
+	public static void convertContentVis(IProject proj) {
 
 		try {
-			File contentFile = new File(WORKSPACE_ROOT + File.separator + "JHotDraw" + File.separator + "Content.vis");
+			File contentFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Content.vis");
 			contentFile.delete();
 			contentFile.createNewFile();
 			String contents = xslConvert(CONTENT_XSL);
@@ -42,10 +43,10 @@ public class ConvertXMLtoMVIS {
 		}
 	}
 
-	public static void convertMarkupVis() {
+	public static void convertMarkupVis(IProject proj) {
 
 		try {
-			File markupFile = new File(WORKSPACE_ROOT + File.separator + "JHotDraw" + File.separator + "Markup.mvis");
+			File markupFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Markup.mvis");
 			markupFile.delete();
 			markupFile.createNewFile();
 			String contents = xslConvert(MARKUP_XSL);
@@ -68,6 +69,7 @@ public class ConvertXMLtoMVIS {
 
 		try {
 			//TODO fix this travesty
+			
 			File xslFile = new File("/Users/jenniferbaldwin/Documents/workspace/Visualiser/src/visualiser/convertxml/" + conversionFile);
 			File xmlFile = new File(WORKSPACE_ROOT + File.separator + "JHotDraw" + File.separator + "patchData.xml");
 

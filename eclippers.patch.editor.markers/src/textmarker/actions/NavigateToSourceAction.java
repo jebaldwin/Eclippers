@@ -15,13 +15,11 @@ import textmarker.TextMarkerPlugin;
 
 public class NavigateToSourceAction {
 
-	public static void openFile(String patchFileName) {
-		IProject[] projs = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		IPath path = new Path(projs[0].getName() + File.separator + patchFileName);
+	public static void openFile(String patchFileName, IProject proj) {
+		IPath path = new Path(proj.getName() + File.separator + patchFileName);
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 		try {
-			ITextEditor editor = (ITextEditor) IDE.openEditor(TextMarkerPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage(), file, true);
+			ITextEditor editor = (ITextEditor) IDE.openEditor(TextMarkerPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage(), file, true);
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}

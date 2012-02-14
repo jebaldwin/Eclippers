@@ -10,11 +10,12 @@
  *******************************************************************************/
 package importpatch.importWizards;
 
-import java.io.IOException;
-
 import importpatch.parser.ParsePatch;
 
+import java.io.IOException;
+
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
@@ -33,6 +34,8 @@ public class ImportPatchWizard extends Wizard implements IImportWizard {
 	 */
 	public boolean performFinish() {
 		IFile file = mainPage.createNewFile();
+		IProject proj = file.getProject();
+		
         if (file == null)
             return false;
         
@@ -40,7 +43,7 @@ public class ImportPatchWizard extends Wizard implements IImportWizard {
         String pathName = file.getLocation().toPortableString();
         String fileName = file.getName();
         try {
-			ParsePatch.parse(pathName, fileName);
+			ParsePatch.parse(pathName, fileName, proj);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
