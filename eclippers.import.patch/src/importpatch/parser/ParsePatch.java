@@ -308,7 +308,7 @@ public class ParsePatch {
 		return array;
 	}
 	
-	public static void markAsPatched(File patchFile, IProject proj){
+	public static void markAsPatched(File patchFile, IProject proj, boolean patched){
 		File xmlFile = new File(WORKSPACE_PATH + XML_FILE);
 		
 		//mark as patched in xml
@@ -320,7 +320,7 @@ public class ParsePatch {
 	        int index = patchFile.getName().indexOf('.');
 	        String patchName = patchFile.getName().substring(0, index);
 	        Element el = doc.getElementById(patchName);
-	        el.setAttribute("applied", "true");
+	        el.setAttribute("applied", new Boolean(patched).toString());
 	        
 	        //write out new xml
             TransformerFactory tFactory = TransformerFactory.newInstance();

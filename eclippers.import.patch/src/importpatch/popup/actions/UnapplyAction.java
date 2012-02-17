@@ -17,7 +17,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 
-public class ApplyAction implements IObjectActionDelegate {
+public class UnapplyAction implements IObjectActionDelegate {
 
 	private Shell shell;
 	File patchFile;
@@ -25,7 +25,7 @@ public class ApplyAction implements IObjectActionDelegate {
 	/**
 	 * Constructor for Action1.
 	 */
-	public ApplyAction() {
+	public UnapplyAction() {
 		super();
 	}
 
@@ -42,7 +42,7 @@ public class ApplyAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 		IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
 		IProject proj = ((FileEditorInput)ei).getFile().getProject();
-		ParsePatch.markAsPatched(patchFile, proj, true);
+		ParsePatch.markAsPatched(patchFile, proj, false);
 	}
 
 	/**
