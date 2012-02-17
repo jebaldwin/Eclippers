@@ -19,5 +19,20 @@
          </description>
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="eclippers.import.patch.contribution1"
+            nameFilter="*patch"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="importpatch.popup.actions.ApplyAction"
+               enablesFor="+"
+               icon="icons/step_done.gif"
+               id="eclippers.importpatch.newAction"
+               label="Mark as Applied">
+         </action>
+      </objectContribution>
+   </extension>
 
 </plugin>

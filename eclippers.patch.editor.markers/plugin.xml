@@ -25,13 +25,25 @@
             markerType="patchAppliesMarker"
             name="patchAppliesAnnotation"
             super="org.eclipse.ui.workbench.texteditor.warning"/>
+      <type
+            markerSeverity="0"
+            markerType="patchLinesMarker"
+            name="patchLinesAnnotation"
+            super="org.eclipse.ui.workbench.texteditor.warning">
+      </type>
   </extension>
   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
             annotationType="patchAppliesAnnotation"
             icon="icons/applies.gif"
-            label="Patch Applies "
+            label="Patch will Apply"
             overviewRulerPreferenceValue="true"/>
+      <specification
+            annotationType="patchLinesAnnotation"
+            icon="icons/plug.gif"
+            label="Patch has Applied "
+            overviewRulerPreferenceValue="true">
+      </specification>
    </extension> 
 
 </plugin>

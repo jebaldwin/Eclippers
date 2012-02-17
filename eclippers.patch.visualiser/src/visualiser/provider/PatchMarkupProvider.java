@@ -25,6 +25,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaProject;
+
 import visualiser.convertxml.ConvertXMLtoMVIS;
 
 public class PatchMarkupProvider extends SimpleMarkupProvider implements
@@ -34,17 +37,37 @@ public class PatchMarkupProvider extends SimpleMarkupProvider implements
 	private final static boolean debugLoading = false;
 
 	private Map kinds;
+	private IProject lastProj;
 
 	/**
 	 * Initialise the provider - loads markup information from a file
 	 */
 	public void initialise() {
 		kinds = new HashMap();
-
-		//TODO did I need these?
-		//ConvertXMLtoMVIS.convertContentVis();
-		//ConvertXMLtoMVIS.convertMarkupVis();
-
+		
+		ISelection selection = VisualiserPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+		IProject proj = null;
+		if (selection instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) selection).getFirstElement();
+			
+			if (selected instanceof IResource) {
+				IResource resource = (IResource) selected;
+				proj = resource.getProject();
+			} else if (selected instanceof IJavaProject)
+				proj = ((IJavaProject) selected).getProject();
+			else if (selected instanceof IResource) {
+				IResource resource = (IResource) selected;
+				proj = resource.getProject();
+			} else if (selected instanceof ICompilationUnit) {
+				ICompilationUnit cu = (ICompilationUnit) selected;
+				proj = cu.getJavaProject().getProject();
+			}
+		}
+		//TODO Do both PatchMarkupProvider and PatchContentProvider have to do this?
+		//ConvertXMLtoMVIS.convertContentVis(proj);
+		//ConvertXMLtoMVIS.convertMarkupVis(proj);
+		lastProj = proj;
+		
 		if (VisualiserPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() != null) {
 			VisualiserPlugin.getDefault().getWorkbench()
 					.getActiveWorkbenchWindow().getSelectionService()
@@ -96,8 +119,7 @@ public class PatchMarkupProvider extends SimpleMarkupProvider implements
 					}
 
 					// Retrieve the Offset:, e.g. 42
-					offset = Integer
-							.parseInt(retrieveKeyValue("Offset:", line)); //$NON-NLS-1$
+					offset = Integer.parseInt(retrieveKeyValue("Offset:", line)); //$NON-NLS-1$
 
 					// Retrieve the Depth:, e.g. 30
 					depth = Integer.parseInt(retrieveKeyValue("Depth:", line)); //$NON-NLS-1$
@@ -108,8 +130,7 @@ public class PatchMarkupProvider extends SimpleMarkupProvider implements
 					scount++;
 
 					if (debugLoading)
-						System.err
-								.println("Loading new stripe: Adding " + newstripe + " for " + membername); //$NON-NLS-1$ //$NON-NLS-2$
+						System.err.println("Loading new stripe: Adding " + newstripe + " for " + membername); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				line = br.readLine();
 			}
@@ -152,7 +173,6 @@ public class PatchMarkupProvider extends SimpleMarkupProvider implements
 	}
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		//TODO fix this!
 		IProject proj = null;
 		
 		if (selection instanceof IStructuredSelection) {
@@ -161,28 +181,25 @@ public class PatchMarkupProvider extends SimpleMarkupProvider implements
 			if (selected instanceof IResource) {
 				IResource resource = (IResource) selected;
 				proj = resource.getProject();
-			}
-			
-			/*if (selected instanceof IJavaProject)
-				return ((IJavaProject) selected).getProject();
+			} else if (selected instanceof IJavaProject)
+				proj = ((IJavaProject) selected).getProject();
 			else if (selected instanceof IResource) {
 				IResource resource = (IResource) selected;
-				return resource.getProject();
+				proj = resource.getProject();
 			} else if (selected instanceof ICompilationUnit) {
 				ICompilationUnit cu = (ICompilationUnit) selected;
-				return cu.getJavaProject().getProject();
-			}*/
+				proj = cu.getJavaProject().getProject();
+			}
 		}
 		
-		if (selection.toString().indexOf("patchData.xml") >= 0
-				|| selection.toString().indexOf("patch") >= 0
-				|| selection.toString().indexOf("vis") >= 0
-				|| selection.toString().startsWith("[JHotDraw")) {
+		if (proj != lastProj) {
 
 			resetMarkupsAndKinds();
+			lastProj = proj;
 
-			ConvertXMLtoMVIS.convertContentVis(proj);
-			ConvertXMLtoMVIS.convertMarkupVis(proj);
+			//TODO Do both PatchMarkupProvider and PatchContentProvider have to do this?
+			//ConvertXMLtoMVIS.convertContentVis(proj);
+			//ConvertXMLtoMVIS.convertMarkupVis(proj);
 
 			try {
 				File fileURL = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Markup.mvis");

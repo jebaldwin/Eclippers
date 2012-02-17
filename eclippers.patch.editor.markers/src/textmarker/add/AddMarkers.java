@@ -20,20 +20,21 @@ import textmarker.parse.ParseXMLForMarkers;
 
 public class AddMarkers {
 
-	public static void addMarkerToFile(String patchName, String fileName, int lineNumber, int length, IProject proj) {
+	public static void addMarkerToFile(String patchName, String fileName, int lineNumber, int length, IProject proj, boolean applied) {
 
 		//allow for default context numbers
 		int lineNum = lineNumber + 3;
 				
 		IPath path = new Path(proj.getName() + File.separator + fileName);
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+		File javaFile = new File(ParseXMLForMarkers.WORKSPACE_ROOT + file.getFullPath().toPortableString());
 
 		try {
 			IFile iFile = file;
 			IMarker marker = null;
 			boolean conflict = false;
 			
-			//TODO look for conflicts with other markers (e.g. AspectJ)
+			//deprecated: look for conflicts with other markers (e.g. AspectJ)
 			/*IMarker[] markers = iFile.findMarkers(null, true, IResource.DEPTH_ZERO);
 			
 			for (int i = markers.length - 1; i >= 0; i--) {
@@ -53,16 +54,23 @@ public class AddMarkers {
 			}*/
 
 			if (!conflict) {
-				marker = iFile.createMarker("patchAppliesMarker");
-				marker.setAttribute(IMarker.MESSAGE, patchName + " patch applies here!");
+				
+				if(!applied){
+					marker = iFile.createMarker("patchAppliesMarker");
+					marker.setAttribute(IMarker.MESSAGE, patchName + " patch will apply here!");
+				} else {
+					marker = iFile.createMarker("patchLinesMarker");
+					marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here!");
+					marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum - 1, javaFile));
+					marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum, javaFile));
+				}
 			}
 
-			marker.setAttribute("owner", patchName);
 			marker.setAttribute(IMarker.LINE_NUMBER, lineNum);
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 			
 			//set navigation to patch file
-			//NavigateToSourceAction.openFile(patchName + ".patch", proj);
+			NavigateToSourceAction.openFile(patchName + ".patch", proj);
 
 		} catch (CoreException e) {
 			e.printStackTrace();
@@ -75,7 +83,6 @@ public class AddMarkers {
 		/*try {
 			iFile.deleteMarkers(null, true, IResource.DEPTH_ZERO);
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
 		
@@ -89,7 +96,7 @@ public class AddMarkers {
 				owner = marker.getAttribute("owner");
 
 				if (owner != null && owner instanceof String)
-					if (owner.equals(ownerName))
+					if (owner.equals("patchAppliesMarker") || owner.equals("patchLinesMarker"))
 						deleteMarkers[deleteindex++] = markers[i];
 			}
 			if (deleteindex > 0) {
@@ -102,7 +109,7 @@ public class AddMarkers {
 		}
 	}
 	
-	public static void addLineToFile(String patchName, String fileName, int lineNum, IProject proj) {
+	/*public static void addLineToFile(String patchName, String fileName, int lineNum, IProject proj) {
 
 		IPath path = new Path(proj.getName() + "\\" + fileName);
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
@@ -113,7 +120,7 @@ public class AddMarkers {
 			IMarker marker = null;
 			boolean conflict = false;
 
-			//TODO AspectJ Markers
+			//deprecated: AspectJ Markers
 			/*IMarker[] markers = iFile.findMarkers(null, true, IResource.DEPTH_ZERO);
 
 			for (int i = markers.length - 1; i >= 0; i--) {
@@ -131,24 +138,24 @@ public class AddMarkers {
 				}
 			}*/
 
-			if (!conflict) {
-				marker = iFile.createMarker("patchLinesMarker");
+			/*if (!conflict) {
+				marker = iFile.createMarker("patchMarker");
 				marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here!");
 			}
 
-			marker.setAttribute("owner", patchName);
+			marker.setAttribute("owner", "patchMarker");
 			marker.setAttribute(IMarker.LINE_NUMBER, lineNum);
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 			marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum - 1, javaFile));
 			marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum, javaFile));
 
 			// set navigation to patch file
-			// NavigateToSourceAction.openFile(patchName + ".patch");
+			NavigateToSourceAction.openFile(patchName + ".patch", proj);
 
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	private static int getCharStart(int lineNum, File javaFile) {
 
@@ -170,11 +177,9 @@ public class AddMarkers {
 				
 				return charPos;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

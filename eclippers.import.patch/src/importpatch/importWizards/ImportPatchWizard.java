@@ -35,9 +35,6 @@ public class ImportPatchWizard extends Wizard implements IImportWizard {
 	public boolean performFinish() {
 		IFile file = mainPage.createNewFile();
 		IProject proj = file.getProject();
-		
-        if (file == null)
-            return false;
         
         //do parsing here
         String pathName = file.getLocation().toPortableString();

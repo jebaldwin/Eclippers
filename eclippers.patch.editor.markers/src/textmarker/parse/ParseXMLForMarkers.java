@@ -39,6 +39,7 @@ public class ParseXMLForMarkers {
 				for(int i = 0 ; i < nl.getLength();i++) {
 					Element patchElement = (Element)nl.item(i);
 					String patchName = patchElement.getAttribute("name");
+					String applied = patchElement.getAttribute("applied");
 					
 					NodeList n2 = patchElement.getElementsByTagName("file");
 					if(n2 != null && n2.getLength() > 0) {
@@ -58,8 +59,11 @@ public class ParseXMLForMarkers {
 									int lineNumber = Integer.parseInt(offsetElement.getAttribute("start"));
 									int length = Integer.parseInt(offsetElement.getAttribute("length"));;
 
-									//TODO figure out which style to use - patched or not patched
-									AddMarkers.addMarkerToFile(patchName, fullPath, lineNumber, length, proj);
+									if(applied.equals("true")){
+										AddMarkers.addMarkerToFile(patchName, fullPath, lineNumber, length, proj, true);
+									} else {
+										AddMarkers.addMarkerToFile(patchName, fullPath, lineNumber, length, proj, false);
+									}
 								}
 							}
 						}

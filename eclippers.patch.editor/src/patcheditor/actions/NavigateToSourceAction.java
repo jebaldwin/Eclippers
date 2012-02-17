@@ -47,7 +47,6 @@ public class NavigateToSourceAction {
 		
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 		
-		//TODO fix - base this on whether patched or not
 		ParseXMLForMarkers.parseXML(proj);
 		
 		try {

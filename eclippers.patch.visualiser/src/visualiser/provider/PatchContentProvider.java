@@ -22,6 +22,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISelectionListener;
@@ -34,16 +36,35 @@ public class PatchContentProvider extends SimpleContentProvider implements
 
 	private static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 	private final static boolean debugLoading = false;
+	private IProject lastProj = null;
 
 	/**
 	 * Initialise the provider - reads in the information from a file
 	 */
 	public void initialise() {
 
-		//TODO did I need these?
-		//ConvertXMLtoMVIS.convertContentVis();
-		//ConvertXMLtoMVIS.convertMarkupVis();
-
+		ISelection selection = VisualiserPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+		IProject proj = null;
+		if (selection instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) selection).getFirstElement();
+			
+			if (selected instanceof IResource) {
+				IResource resource = (IResource) selected;
+				proj = resource.getProject();
+			} else if (selected instanceof IJavaProject)
+				proj = ((IJavaProject) selected).getProject();
+			else if (selected instanceof IResource) {
+				IResource resource = (IResource) selected;
+				proj = resource.getProject();
+			} else if (selected instanceof ICompilationUnit) {
+				ICompilationUnit cu = (ICompilationUnit) selected;
+				proj = cu.getJavaProject().getProject();
+			}
+		}
+		ConvertXMLtoMVIS.convertContentVis(proj);
+		ConvertXMLtoMVIS.convertMarkupVis(proj);
+		lastProj = proj;
+		
 		if (VisualiserPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() != null) {
 			VisualiserPlugin.getDefault().getWorkbench()
 					.getActiveWorkbenchWindow().getSelectionService()
@@ -147,7 +168,6 @@ public class PatchContentProvider extends SimpleContentProvider implements
 	}
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		//TODO fix this!
 		IProject proj = null;
 		
 		if (selection instanceof IStructuredSelection) {
@@ -156,25 +176,21 @@ public class PatchContentProvider extends SimpleContentProvider implements
 			if (selected instanceof IResource) {
 				IResource resource = (IResource) selected;
 				proj = resource.getProject();
-			}
-			
-			/*if (selected instanceof IJavaProject)
-				return ((IJavaProject) selected).getProject();
+			} else if (selected instanceof IJavaProject)
+				proj = ((IJavaProject) selected).getProject();
 			else if (selected instanceof IResource) {
 				IResource resource = (IResource) selected;
-				return resource.getProject();
+				proj = resource.getProject();
 			} else if (selected instanceof ICompilationUnit) {
 				ICompilationUnit cu = (ICompilationUnit) selected;
-				return cu.getJavaProject().getProject();
-			}*/
+				proj = cu.getJavaProject().getProject();
+			}
 		}
 		
-		if (selection.toString().indexOf("patchData.xml") >= 0
-				|| selection.toString().indexOf("patch") >= 0
-				|| selection.toString().indexOf("vis") >= 0
-				|| selection.toString().startsWith("[JHotDraw")) {
+		if (proj != lastProj) {
 
 			super.resetModel();
+			lastProj = proj;
 
 			ConvertXMLtoMVIS.convertContentVis(proj);
 			ConvertXMLtoMVIS.convertMarkupVis(proj);

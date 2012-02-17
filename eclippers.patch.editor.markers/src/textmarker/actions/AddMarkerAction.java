@@ -14,14 +14,6 @@ import org.eclipse.ui.part.FileEditorInput;
 
 import textmarker.parse.ParseXMLForMarkers;
 
-/**
- * Our sample action implements workbench action delegate.
- * The action proxy will be created by the workbench and
- * shown in the UI. When the user tries to use the action,
- * this delegate will be created and execution will be 
- * delegated to it.
- * @see IWorkbenchWindowActionDelegate
- */
 public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
 	/**
@@ -37,7 +29,6 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		//TODO refresh open file markers
 		IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
 		IProject proj = ((FileEditorInput)ei).getFile().getProject();
 		ParseXMLForMarkers.parseXML(proj);

@@ -27,7 +27,7 @@ public class ConvertXMLtoMVIS {
 			File contentFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Content.vis");
 			contentFile.delete();
 			contentFile.createNewFile();
-			String contents = xslConvert(CONTENT_XSL);
+			String contents = xslConvert(CONTENT_XSL, proj);
 			
 			//need to remove top xml generated lines from contents
 			int index = contents.indexOf("\n");
@@ -49,7 +49,7 @@ public class ConvertXMLtoMVIS {
 			File markupFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Markup.mvis");
 			markupFile.delete();
 			markupFile.createNewFile();
-			String contents = xslConvert(MARKUP_XSL);
+			String contents = xslConvert(MARKUP_XSL, proj);
 			
 			//need to remove top xml generated lines from contents
 			int index = contents.indexOf("\n");
@@ -65,13 +65,11 @@ public class ConvertXMLtoMVIS {
 		}
 	}
 
-	public static String xslConvert(String conversionFile) {
+	public static String xslConvert(String conversionFile, IProject proj) {
 
 		try {
-			//TODO fix this travesty
-			
-			File xslFile = new File("/Users/jenniferbaldwin/Documents/workspace/Visualiser/src/visualiser/convertxml/" + conversionFile);
-			File xmlFile = new File(WORKSPACE_ROOT + File.separator + "JHotDraw" + File.separator + "patchData.xml");
+			File xslFile = new File(conversionFile);
+			File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patchData.xml");
 
 			TransformerFactory transFact = TransformerFactory.newInstance();
 
