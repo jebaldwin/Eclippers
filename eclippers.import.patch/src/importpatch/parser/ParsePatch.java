@@ -52,7 +52,7 @@ public class ParsePatch {
             BufferedReader input = new BufferedReader(new FileReader(patchFile));
             String line;
 			String fileName = null;
-			int addLineCount = 0;
+			int addLineCount = 0, offsetDiff = 0;
 			int lineCount = 0;
 			
 			int index = patchFile.getName().indexOf('.');
@@ -63,6 +63,9 @@ public class ParsePatch {
 			root.appendChild(patchEl);
 			Element diffStart = null;
 			Element off = null;
+			int lengthBefore = 0;
+			int lengthAfter = 0;
+			boolean firstEntry = true;
 			
             while((line = input.readLine()) != null){
             	if (line.startsWith("+++")) {
@@ -95,12 +98,14 @@ public class ParsePatch {
 					index = halfLine.indexOf(',');
 					String halfLine2 = array[1];
 					index2 = halfLine2.indexOf(',');
-					int lengthBefore = Integer.parseInt(halfLine2.substring(index2 + 1));
-					int lengthAfter = Integer.parseInt(halfLine.substring(index + 1));
+					lengthBefore = Integer.parseInt(halfLine2.substring(index2 + 1));
+					lengthAfter = Integer.parseInt(halfLine.substring(index + 1));
 					
 					off = doc.createElement("offset");
 					off.setAttribute("start", Integer.toString(startAt));
+					off.setAttribute("startApplied", Integer.toString(startAtSecondFile));
 					off.setAttribute("length", Integer.toString(Math.abs(lengthAfter - lengthBefore)));
+
 					diffStart.appendChild(off);
 				} else if (line.startsWith("-") && !line.startsWith("---")) {
 					Element min = doc.createElement("remline");

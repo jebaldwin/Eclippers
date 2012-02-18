@@ -74,8 +74,9 @@ public class ParseXMLForMarkers {
 									for(int k = 0; k < n3.getLength(); k++) {
 										Element offsetElement = (Element)n3.item(k);
 										int lineNumber = Integer.parseInt(offsetElement.getAttribute("at"));
-
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, true);
+										int newLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("startApplied"));
+										int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, true);
 									}
 								}
 							} else {					
