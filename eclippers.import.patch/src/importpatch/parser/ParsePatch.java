@@ -58,7 +58,7 @@ public class ParsePatch {
 			int index = patchFile.getName().indexOf('.');
 			String patchName = patchFile.getName().substring(0, index);
 			Element patchEl = doc.createElement("patch");
-			patchEl.setAttribute("id", patchName);
+			patchEl.setAttribute("name", patchName);
 			patchEl.setAttribute("applied", "false");
 			root.appendChild(patchEl);
 			Element diffStart = null;
@@ -162,7 +162,7 @@ public class ParsePatch {
 	        NodeList els = doc.getElementsByTagName("patch");
 	        Element el = null;
 	        for (int i = 0; i < els.getLength(); i++) {
-				if(((Element)els.item(i)).getAttribute("id").equals(patchName)){
+				if(((Element)els.item(i)).getAttribute("name").equals(patchName)){
 					el = (Element)els.item(i);
 					break;
 				}
