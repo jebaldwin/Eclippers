@@ -53,7 +53,7 @@ public class ImportPatchWizard extends Wizard implements IImportWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		setWindowTitle("File Import Wizard"); //NON-NLS-1
 		setNeedsProgressMonitor(true);
-		mainPage = new ImportPatchWizardPage("Import Patch File",selection); //NON-NLS-1
+		mainPage = new ImportPatchWizardPage("Import Patch File", selection); //NON-NLS-1
 	}
 	
 	/* (non-Javadoc)

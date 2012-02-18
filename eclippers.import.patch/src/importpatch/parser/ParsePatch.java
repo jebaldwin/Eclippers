@@ -39,10 +39,7 @@ public class ParsePatch {
 	 * @throws IOException
 	 */
 	public static void parse(IFile patchFile, IProject proj, String altContents, String patchTitle) throws IOException {
-		String patchPath = patchFile.getLocation().toPortableString();
-		String fileName = patchFile.getName();
-		int index = patchPath.indexOf(fileName);
-		File xmlFile = new File(patchPath.substring(0, index) + XML_FILE);
+		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + XML_FILE);
 		if(!xmlFile.exists()){
 			xmlFile.createNewFile();
 			
@@ -50,7 +47,7 @@ public class ParsePatch {
 			output.write("<globalPatchData></globalPatchData>");
 			output.close();
 		}
-		parseToXML(new File(patchPath), xmlFile, proj, altContents, patchTitle);
+		parseToXML(new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + patchFile.getName()), xmlFile, proj, altContents, patchTitle);
 	}
 
 	private static void parseToXML(File patchFile, File xmlFile, IProject proj, String altContents, String patchTitle) {
@@ -61,10 +58,9 @@ public class ParsePatch {
             Document doc = docBuilder.parse (xmlFile);
             Element root = doc.getDocumentElement();
             
-            
             String line;
 			String fileName = null;
-			int addLineCount = 0, offsetDiff = 0;
+			int addLineCount = 0;
 			int lineCount = 0;
 			String patchName = "";
 			BufferedReader input;
@@ -193,8 +189,13 @@ public class ParsePatch {
 	        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 	        Document doc = docBuilder.parse (xmlFile);
 	        
-	        int index = patchFile.getName().indexOf('.');
-	        String patchName = patchFile.getName().substring(0, index);
+	        String patchName = patchTitle;
+	        
+	        if(patchFile != null){
+	        	int index = patchFile.getName().indexOf('.');
+	        	patchName = patchFile.getName().substring(0, index);
+	        } 
+	        
 	        NodeList els = doc.getElementsByTagName("patch");
 	        Element el = null;
 	        for (int i = 0; i < els.getLength(); i++) {
