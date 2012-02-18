@@ -146,8 +146,9 @@ public class ParsePatch {
 		int index = fileName.lastIndexOf("/");
 		String packageName = fileName.substring(0, index);
 		String file = fileName.substring(index + 1);
-		index = file.indexOf('.');
-		file = file.substring(0, index);
+		//removing file extension
+		//index = file.indexOf('.');
+		//file = file.substring(0, index);
 		packageName = packageName.replace(File.separatorChar, '.');
 
 		array[0] = packageName;

@@ -48,7 +48,7 @@ public class ParseXMLForMarkers {
 					if(n2 != null && n2.getLength() > 0) {
 						for (int j = 0; j < n2.getLength(); j++) {
 							Element fileElement = (Element)n2.item(j);
-							String fileName = fileElement.getAttribute("name") + ".java";
+							String fileName = fileElement.getAttribute("name");// + ".java";
 							String filePath = fileElement.getAttribute("package");
 							filePath = filePath.replaceAll("\\.", "/");
 							String fullPath = WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + filePath + File.separator + fileName;
