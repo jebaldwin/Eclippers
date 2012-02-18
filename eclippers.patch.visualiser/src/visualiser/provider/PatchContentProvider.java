@@ -17,6 +17,7 @@ import org.eclipse.contribution.visualiser.simpleImpl.SimpleContentProvider;
 import org.eclipse.contribution.visualiser.simpleImpl.SimpleGroup;
 import org.eclipse.contribution.visualiser.simpleImpl.SimpleMarkupProvider;
 import org.eclipse.contribution.visualiser.simpleImpl.SimpleMember;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -24,6 +25,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.internal.core.JavaProject;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISelectionListener;
@@ -42,28 +45,6 @@ public class PatchContentProvider extends SimpleContentProvider implements
 	 * Initialise the provider - reads in the information from a file
 	 */
 	public void initialise() {
-
-		ISelection selection = VisualiserPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
-		IProject proj = null;
-		if (selection instanceof IStructuredSelection) {
-			Object selected = ((IStructuredSelection) selection).getFirstElement();
-			
-			if (selected instanceof IResource) {
-				IResource resource = (IResource) selected;
-				proj = resource.getProject();
-			} else if (selected instanceof IJavaProject)
-				proj = ((IJavaProject) selected).getProject();
-			else if (selected instanceof IResource) {
-				IResource resource = (IResource) selected;
-				proj = resource.getProject();
-			} else if (selected instanceof ICompilationUnit) {
-				ICompilationUnit cu = (ICompilationUnit) selected;
-				proj = cu.getJavaProject().getProject();
-			}
-		}
-		ConvertXMLtoMVIS.convertContentVis(proj);
-		ConvertXMLtoMVIS.convertMarkupVis(proj);
-		lastProj = proj;
 		
 		if (VisualiserPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() != null) {
 			VisualiserPlugin.getDefault().getWorkbench()
@@ -176,15 +157,21 @@ public class PatchContentProvider extends SimpleContentProvider implements
 			if (selected instanceof IResource) {
 				IResource resource = (IResource) selected;
 				proj = resource.getProject();
-			} else if (selected instanceof IJavaProject)
+			} else if (selected instanceof IJavaProject) {
 				proj = ((IJavaProject) selected).getProject();
-			else if (selected instanceof IResource) {
+			} else if (selected instanceof IResource) {
 				IResource resource = (IResource) selected;
 				proj = resource.getProject();
 			} else if (selected instanceof ICompilationUnit) {
 				ICompilationUnit cu = (ICompilationUnit) selected;
 				proj = cu.getJavaProject().getProject();
+			} else {
+				IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
+				proj = file.getProject();
 			}
+		} else if (selection instanceof TextSelection){
+			IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
+			proj = file.getProject();
 		}
 		
 		if (proj != lastProj) {

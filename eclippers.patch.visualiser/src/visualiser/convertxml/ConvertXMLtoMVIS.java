@@ -14,6 +14,10 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
+
+import visualiser.PatchVisualiserPlugin;
 
 public class ConvertXMLtoMVIS {
 
@@ -27,7 +31,13 @@ public class ConvertXMLtoMVIS {
 			File contentFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Content.vis");
 			contentFile.delete();
 			contentFile.createNewFile();
-			String contents = xslConvert(CONTENT_XSL, proj);
+			
+			String xslPath = "";
+			Bundle bundle = Platform.getBundle(PatchVisualiserPlugin.PLUGIN_ID);
+			if (bundle != null) {
+				xslPath = bundle.getLocation().replace("reference:file:/", "") + "src" + File.separator + "visualiser" + File.separator + "convertxml" + File.separator + CONTENT_XSL;
+			}
+			String contents = xslConvert(xslPath, proj);
 			
 			//need to remove top xml generated lines from contents
 			int index = contents.indexOf("\n");
@@ -36,9 +46,7 @@ public class ConvertXMLtoMVIS {
             FileWriter out = new FileWriter(contentFile);
             out.write(contents);
             out.close();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -49,7 +57,13 @@ public class ConvertXMLtoMVIS {
 			File markupFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Markup.mvis");
 			markupFile.delete();
 			markupFile.createNewFile();
-			String contents = xslConvert(MARKUP_XSL, proj);
+			
+			String xslPath = "";
+			Bundle bundle = Platform.getBundle(PatchVisualiserPlugin.PLUGIN_ID);
+			if (bundle != null) {
+				xslPath = bundle.getLocation().replace("reference:file:/", "") + "src" + File.separator + "visualiser" + File.separator + "convertxml" + File.separator + MARKUP_XSL;
+			}
+			String contents = xslConvert(xslPath, proj);
 			
 			//need to remove top xml generated lines from contents
 			int index = contents.indexOf("\n");
@@ -58,9 +72,7 @@ public class ConvertXMLtoMVIS {
             FileWriter out = new FileWriter(markupFile);
             out.write(contents);
             out.close();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

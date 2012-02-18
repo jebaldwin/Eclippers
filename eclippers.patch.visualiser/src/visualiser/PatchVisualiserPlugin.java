@@ -7,20 +7,20 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class VisualiserPlugin extends AbstractUIPlugin {
+public class PatchVisualiserPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "eclippers.patch.visualiser";
 
 	// The shared instance
-	private static VisualiserPlugin plugin;
+	private static PatchVisualiserPlugin plugin;
 	
 	public static Visualiser visualiser;
 	
 	/**
 	 * The constructor
 	 */
-	public VisualiserPlugin() {
+	public PatchVisualiserPlugin() {
 		plugin = this;
 	}
 
@@ -46,7 +46,7 @@ public class VisualiserPlugin extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static VisualiserPlugin getDefault() {
+	public static PatchVisualiserPlugin getDefault() {
 		return plugin;
 	}
 

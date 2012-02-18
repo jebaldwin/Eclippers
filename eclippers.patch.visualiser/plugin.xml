@@ -6,7 +6,7 @@
       <provider
             contentProviderClass="visualiser.provider.PatchContentProvider"
             description="Provider that shows patch file markers in the visualiser"
-            emptyMessage="No patch information to show."
+            emptyMessage="No patch information to show. Please select a project, file or editor which contains patch file data."
             id="PatchProvider"
             markupProviderClass="visualiser.provider.PatchMarkupProvider"
             name="Patch-based provider"

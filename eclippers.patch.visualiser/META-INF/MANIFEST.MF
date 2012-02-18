@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Visualiser Plug-in
 Bundle-SymbolicName: eclippers.patch.visualiser;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: visualiser.VisualiserPlugin
+Bundle-Activator: visualiser.PatchVisualiserPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
