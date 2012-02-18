@@ -44,7 +44,7 @@ public class ParsePatch {
 			xmlFile.createNewFile();
 			
 			BufferedWriter output = new BufferedWriter(new FileWriter(xmlFile));
-			output.write("<globalPatchData></globalPatchData>");
+			output.write("<patchdata></patchdata>");
 			output.close();
 		}
 		parseToXML(new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + patchFile.getName()), xmlFile, proj, altContents, patchTitle);
@@ -149,6 +149,7 @@ public class ParsePatch {
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new FileOutputStream(xmlFile));
             transformer.transform(source, result); 
+            input.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -219,6 +220,46 @@ public class ParsePatch {
 		} catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	public static void removePatch(String patchName, IProject proj){
+		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + XML_FILE);
+		
+		//mark as patched in xml
+		try{
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+	        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+	        Document doc = docBuilder.parse (xmlFile);
+	        
+	        patchName = patchName.replace(".patch", "");
+	        
+	        NodeList els = doc.getElementsByTagName("patch");
+	        Element el = null;
+	        for (int i = 0; i < els.getLength(); i++) {
+				if(((Element)els.item(i)).getAttribute("name").equals(patchName)){
+					el = (Element)els.item(i);
+					break;
+				}
+			}
+	        
+	        if(el != null){
+		        doc.getDocumentElement().removeChild(el);
+		        
+		        //write out new xml
+	            TransformerFactory tFactory = TransformerFactory.newInstance();
+	            Transformer transformer = tFactory.newTransformer();
+	            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+	            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+	            
+	            DOMSource source = new DOMSource(doc);
+	            StreamResult result = new StreamResult(new FileOutputStream(xmlFile));
+	            transformer.transform(source, result); 
+	        }
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+	        
 	}
 
 	private static int getFileLength(String fileName, IProject proj) {
