@@ -20,7 +20,7 @@ import textmarker.parse.ParseXMLForMarkers;
 
 public class AddMarkers {
 
-	public static void addMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, boolean applied) {
+	public static void addMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean applied) {
 
 		//allow for default context numbers
 		if(!applied)
@@ -58,10 +58,10 @@ public class AddMarkers {
 				
 				if(!applied){
 					marker = file.createMarker("patchAppliesMarker");
-					marker.setAttribute(IMarker.MESSAGE, patchName + " patch will apply here!");
+					marker.setAttribute(IMarker.MESSAGE, patchName + " patch will apply here. \r" + code);
 				} else {
 					marker = file.createMarker("patchLinesMarker");
-					marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here!");
+					marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here.");
 					marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum - 1, javaFile));
 					marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum, javaFile));
 				}
@@ -69,8 +69,6 @@ public class AddMarkers {
 
 			marker.setAttribute(IMarker.LINE_NUMBER, lineNum);
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
-			marker.setAttribute("patch", patchName + ".patch");
-			marker.setAttribute("proj", proj);
 			
 			//set navigation to patch file
 			//NavigateToSourceAction.openFile(patchName + ".patch", proj);

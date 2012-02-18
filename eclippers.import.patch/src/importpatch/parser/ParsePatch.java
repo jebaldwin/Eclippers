@@ -65,7 +65,6 @@ public class ParsePatch {
 			Element off = null;
 			int lengthBefore = 0;
 			int lengthAfter = 0;
-			boolean firstEntry = true;
 			
             while((line = input.readLine()) != null){
             	if (line.startsWith("+++")) {

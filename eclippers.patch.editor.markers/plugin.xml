@@ -59,5 +59,13 @@
              verticalRulerPreferenceKey="VerticalRuler"
              verticalRulerPreferenceValue="true"/>
   </extension>
+  <extension
+        point="org.eclipse.ui.editors.markerUpdaters">
+     <updater
+           class="eclippers.patch.editor.markers.AppliesUpdater"
+           id="eclippers.patch.editor.markers.applies.updater"
+           markerType="patchAppliesMarker">
+     </updater>
+  </extension>
 
 </plugin>

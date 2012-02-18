@@ -76,18 +76,31 @@ public class ParseXMLForMarkers {
 										int lineNumber = Integer.parseInt(offsetElement.getAttribute("at"));
 										int newLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("startApplied"));
 										int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, true);
+										String codeLine = offsetElement.getAttribute("content");
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true);
 									}
 								}
+
 							} else {					
 								NodeList n3 = fileElement.getElementsByTagName("offset");
 								if(n3 != null && n3.getLength() > 0) {
 									for(int k = 0; k < n3.getLength(); k++) {
 										Element offsetElement = (Element)n3.item(k);
 										int lineNumber = Integer.parseInt(offsetElement.getAttribute("start"));
-										int length = Integer.parseInt(offsetElement.getAttribute("length"));;
-	
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, false);
+										//enumerate lines of code
+										String lines = "Lines that will be removed:\n";
+										NodeList n4 = offsetElement.getElementsByTagName("remline");									
+										for(int j1 = 0; j1 < n4.getLength(); j1++) {
+											Element r = (Element)n4.item(j1);
+											lines += r.getAttribute("content") + "\n";
+										}
+										lines += "\nLines that will be added:\n";
+										n4 = offsetElement.getElementsByTagName("addline");									
+										for(int j1 = 0; j1 < n4.getLength(); j1++) {
+											Element r = (Element)n4.item(j1);
+											lines += r.getAttribute("content") + "\n";
+										}
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, lines, false);
 									}
 								}
 							}
