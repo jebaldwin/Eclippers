@@ -34,8 +34,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import visualiser.convertxml.ConvertXMLtoMVIS;
 
-public class PatchContentProvider extends SimpleContentProvider implements
-		ISelectionListener {
+public class PatchContentProvider extends SimpleContentProvider implements ISelectionListener {
 
 	private static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 	private final static boolean debugLoading = false;
@@ -45,11 +44,9 @@ public class PatchContentProvider extends SimpleContentProvider implements
 	 * Initialise the provider - reads in the information from a file
 	 */
 	public void initialise() {
-		
+
 		if (VisualiserPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow() != null) {
-			VisualiserPlugin.getDefault().getWorkbench()
-					.getActiveWorkbenchWindow().getSelectionService()
-					.addSelectionListener(this);
+			VisualiserPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService().addSelectionListener(this);
 		}
 	}
 
@@ -62,9 +59,7 @@ public class PatchContentProvider extends SimpleContentProvider implements
 	 */
 	public static void log(int msgType, String msg, Exception e) {
 		// An example of how to send log data to the .metadata/.log file.
-		VisualiserPlugin.getDefault().getLog().log(
-				new Status(msgType,
-						"org.eclipse.contribution.visualiser", 0, msg, e)); //$NON-NLS-1$
+		VisualiserPlugin.getDefault().getLog().log(new Status(msgType, "org.eclipse.contribution.visualiser", 0, msg, e)); //$NON-NLS-1$
 	}
 
 	/**
@@ -112,12 +107,10 @@ public class PatchContentProvider extends SimpleContentProvider implements
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			log(IStatus.ERROR,
-					"FileContentProvider failed to load file (FNF)", e); //$NON-NLS-1$
+			log(IStatus.ERROR, "FileContentProvider failed to load file (FNF)", e); //$NON-NLS-1$
 		} catch (IOException e) {
 			e.printStackTrace();
-			log(IStatus.ERROR,
-					"FileContentProvider failed to load file (FNF)", e); //$NON-NLS-1$
+			log(IStatus.ERROR, "FileContentProvider failed to load file (FNF)", e); //$NON-NLS-1$
 		}
 	}
 
@@ -150,56 +143,55 @@ public class PatchContentProvider extends SimpleContentProvider implements
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		IProject proj = null;
-		
-		if (selection instanceof IStructuredSelection) {
-			Object selected = ((IStructuredSelection) selection).getFirstElement();
-			
-			if (selected instanceof IResource) {
-				IResource resource = (IResource) selected;
-				proj = resource.getProject();
-			} else if (selected instanceof IJavaProject) {
-				proj = ((IJavaProject) selected).getProject();
-			} else if (selected instanceof IResource) {
-				IResource resource = (IResource) selected;
-				proj = resource.getProject();
-			} else if (selected instanceof ICompilationUnit) {
-				ICompilationUnit cu = (ICompilationUnit) selected;
-				proj = cu.getJavaProject().getProject();
-			} else {
+		// if the Visualiser is showing, update to use the new settings
+		if (VisualiserPlugin.visualiser != null) {
+			if (selection instanceof IStructuredSelection) {
+				Object selected = ((IStructuredSelection) selection).getFirstElement();
+
+				if (selected instanceof IResource) {
+					IResource resource = (IResource) selected;
+					proj = resource.getProject();
+				} else if (selected instanceof IJavaProject) {
+					proj = ((IJavaProject) selected).getProject();
+				} else if (selected instanceof IResource) {
+					IResource resource = (IResource) selected;
+					proj = resource.getProject();
+				} else if (selected instanceof ICompilationUnit) {
+					ICompilationUnit cu = (ICompilationUnit) selected;
+					proj = cu.getJavaProject().getProject();
+				} else {
+					IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
+					proj = file.getProject();
+				}
+			} else if (selection instanceof TextSelection) {
 				IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
 				proj = file.getProject();
 			}
-		} else if (selection instanceof TextSelection){
-			IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
-			proj = file.getProject();
-		}
-		
-		if (proj != lastProj) {
 
-			super.resetModel();
-			lastProj = proj;
+			if (proj != lastProj) {
 
-			ConvertXMLtoMVIS.convertContentVis(proj);
-			ConvertXMLtoMVIS.convertMarkupVis(proj);
+				super.resetModel();
+				lastProj = proj;
 
-			if (numberOfGroupsDefined() == 0) {
-				try {
-					File fileURL = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Content.vis");
-					InputStream in = new FileInputStream(fileURL);
-					loadVisContents(in);
-					in.close();
-				} catch (IOException ioe) {
-					ioe.printStackTrace();
-					VisualiserPlugin.logException(ioe);
-				}
+				ConvertXMLtoMVIS.convertContentVis(proj);
+				ConvertXMLtoMVIS.convertMarkupVis(proj);
 
-				IMarkupProvider markupP = ProviderManager.getMarkupProvider();
-				if (markupP instanceof SimpleMarkupProvider) {
-					((SimpleMarkupProvider) markupP).resetColours();
-				}
+				if (numberOfGroupsDefined() == 0) {
+					try {
+						File fileURL = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Content.vis");
+						InputStream in = new FileInputStream(fileURL);
+						loadVisContents(in);
+						in.close();
+					} catch (IOException ioe) {
+						ioe.printStackTrace();
+						VisualiserPlugin.logException(ioe);
+					}
 
-				// if the Visualiser is showing, update to use the new settings
-				if (VisualiserPlugin.visualiser != null) {
+					IMarkupProvider markupP = ProviderManager.getMarkupProvider();
+					if (markupP instanceof SimpleMarkupProvider) {
+						((SimpleMarkupProvider) markupP).resetColours();
+					}
+
 					if (VisualiserPlugin.menu != null) {
 						VisualiserPlugin.menu.setVisMarkupProvider(markupP);
 					}

@@ -1,7 +1,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
                  xmlns="http://www.w3.org/1999/xhtml">
 
-<xsl:template match="globalPatchData">
+<xsl:template match="patchdata">
    <xsl:for-each select="patch">
    	<xsl:variable name="patchName" select="@name"/>
    	<xsl:for-each select="file">

@@ -46,6 +46,8 @@ public class ParsePatch {
 			BufferedWriter output = new BufferedWriter(new FileWriter(xmlFile));
 			output.write("<patchdata></patchdata>");
 			output.close();
+			
+			//TODO create ifile for this and set it to hidden, visible for now since need to debug
 		}
 		parseToXML(new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + patchFile.getName()), xmlFile, proj, altContents, patchTitle);
 	}
@@ -150,6 +152,9 @@ public class ParsePatch {
             StreamResult result = new StreamResult(new FileOutputStream(xmlFile));
             transformer.transform(source, result); 
             input.close();
+            
+            //TODO cause visualiser to refresh by doing selectionchanged event
+            
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -225,7 +230,7 @@ public class ParsePatch {
 	public static void removePatch(String patchName, IProject proj){
 		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + XML_FILE);
 		
-		//mark as patched in xml
+		//remove element from xml
 		try{
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 	        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();

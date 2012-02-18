@@ -5,6 +5,8 @@ import importpatch.parser.ParsePatch;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,6 +40,17 @@ public class UnapplyAction implements IObjectActionDelegate {
 	 */
 	public void run(IAction action) {
 		ParsePatch.markAsPatched(patchFile.getFullPath().toFile(), null, proj, false);
+		
+		//rename extension to patch from apatch
+		String WORKSPACE_PATH = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
+		java.io.File oFile = new java.io.File(WORKSPACE_PATH + java.io.File.separator + patchFile.getFullPath().toString());
+		java.io.File nFile = new java.io.File(WORKSPACE_PATH + java.io.File.separator + patchFile.getFullPath().toString().replace("patched", "patch"));
+		oFile.renameTo(nFile);
+		try {
+			proj.refreshLocal(IProject.DEPTH_ONE, null);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

@@ -184,9 +184,8 @@ public class PatchMarkupProvider extends SimpleMarkupProvider implements
 			resetMarkupsAndKinds();
 			lastProj = proj;
 
-			//TODO Do both PatchMarkupProvider and PatchContentProvider have to do this?
-			//ConvertXMLtoMVIS.convertContentVis(proj);
-			//ConvertXMLtoMVIS.convertMarkupVis(proj);
+			ConvertXMLtoMVIS.convertContentVis(proj);
+			ConvertXMLtoMVIS.convertMarkupVis(proj);
 
 			try {
 				File fileURL = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Markup.mvis");

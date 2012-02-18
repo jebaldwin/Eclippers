@@ -31,6 +31,12 @@
             name="patchLinesAnnotation"
             super="org.eclipse.ui.workbench.texteditor.warning">
       </type>
+      <type
+            markerSeverity="0"
+            markerType="patchLinesRemovedMarker"
+            name="patchLinesRemovedAnnotation"
+            super="org.eclipse.ui.workbench.texteditor.warning">
+      </type>
   </extension>
   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
@@ -58,6 +64,27 @@
              textStylePreferenceValue="NONE"
              verticalRulerPreferenceKey="VerticalRuler"
              verticalRulerPreferenceValue="true"/>
+      <specification
+            annotationType="patchLinesRemovedAnnotation"
+            colorPreferenceKey="AnnotationColor"
+            colorPreferenceValue="238,139,139"
+            contributesToHeader="false"
+            highlightPreferenceKey="HighLight"
+            highlightPreferenceValue="true"
+            icon="icons/minus.gif"
+            includeOnPreferencePage="true"
+            label="Patch Lines Removed"
+            overviewRulerPreferenceKey="OverviewRuler"
+            overviewRulerPreferenceValue="true"
+            presentationLayer="1"
+            symbolicIcon="info"
+            textPreferenceKey="AnnotationOccurance"
+            textPreferenceValue="false"
+            textStylePreferenceKey="AnnotationTextStyle"
+            textStylePreferenceValue="NONE"
+            verticalRulerPreferenceKey="VerticalRuler"
+            verticalRulerPreferenceValue="true">
+      </specification>
   </extension>
   <extension
         point="org.eclipse.ui.editors.markerUpdaters">

@@ -12,5 +12,13 @@
             class="patcheditor.editors.PatchEditor"
             id="patcheditor.editors.PatchEditor">
       </editor>
+      <editor
+            class="patcheditor.editors.PatchEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            extensions="patched"
+            icon="icons/bandaid-applied.gif"
+            id="patcheditor.editors.PatchAppliedEditor"
+            name="Patch Editor">
+      </editor>
    </extension>
 </plugin>

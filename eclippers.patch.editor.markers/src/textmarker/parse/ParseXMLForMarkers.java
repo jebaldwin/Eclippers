@@ -77,10 +77,21 @@ public class ParseXMLForMarkers {
 										int newLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("startApplied"));
 										int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
 										String codeLine = offsetElement.getAttribute("content");
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true);
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, true);
 									}
 								}
 
+								n3 = fileElement.getElementsByTagName("remline");
+								if(n3 != null && n3.getLength() > 0) {
+									for(int k = 0; k < n3.getLength(); k++) {
+										Element offsetElement = (Element)n3.item(k);
+										int lineNumber = Integer.parseInt(offsetElement.getAttribute("at"));
+										int newLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("startApplied"));
+										int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
+										String codeLine = offsetElement.getAttribute("content");
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false);
+									}
+								}
 							} else {					
 								NodeList n3 = fileElement.getElementsByTagName("offset");
 								if(n3 != null && n3.getLength() > 0) {
@@ -100,7 +111,7 @@ public class ParseXMLForMarkers {
 											Element r = (Element)n4.item(j1);
 											lines += r.getAttribute("content") + "\n";
 										}
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, lines, false);
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, lines, false, true);
 									}
 								}
 							}

@@ -20,7 +20,7 @@ import textmarker.parse.ParseXMLForMarkers;
 
 public class AddMarkers {
 
-	public static void addMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean applied) {
+	public static void addMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean applied, boolean lineAdded) {
 
 		//allow for default context numbers
 		if(!applied)
@@ -60,10 +60,17 @@ public class AddMarkers {
 					marker = file.createMarker("patchAppliesMarker");
 					marker.setAttribute(IMarker.MESSAGE, patchName + " patch will apply here. \r" + code);
 				} else {
-					marker = file.createMarker("patchLinesMarker");
-					marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here.");
-					marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum - 1, javaFile));
-					marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum, javaFile));
+					if(lineAdded){
+						marker = file.createMarker("patchLinesMarker");
+						marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line added.");
+						marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum - 1, javaFile));
+						marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum, javaFile));
+					} else {
+						marker = file.createMarker("patchLinesRemovedMarker");
+						marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line removed.");
+						marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum - 1, javaFile));
+						marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum, javaFile));						
+					}
 				}
 			}
 
@@ -90,6 +97,11 @@ public class AddMarkers {
 		}
 		try {
 			iFile.deleteMarkers("patchLinesMarker", true, IResource.DEPTH_ZERO);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		try {
+			iFile.deleteMarkers("patchLinesRemovedMarker", true, IResource.DEPTH_ZERO);
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}

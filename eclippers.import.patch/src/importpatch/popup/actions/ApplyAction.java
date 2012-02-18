@@ -6,6 +6,8 @@ import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
@@ -41,6 +43,17 @@ public class ApplyAction implements IObjectActionDelegate {
 	 */
 	public void run(IAction action) {
 		ParsePatch.markAsPatched(patchFile.getFullPath().toFile(), null, proj, true);
+		
+		//rename extension to patch from apatch
+		String WORKSPACE_PATH = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
+		java.io.File oFile = new java.io.File(WORKSPACE_PATH + java.io.File.separator + patchFile.getFullPath().toString());
+		java.io.File nFile = new java.io.File(WORKSPACE_PATH + java.io.File.separator + patchFile.getFullPath().toString().replace("patch", "patched"));
+		oFile.renameTo(nFile);
+		try {
+			proj.refreshLocal(IProject.DEPTH_ONE, null);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
