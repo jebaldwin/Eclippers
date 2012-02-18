@@ -105,13 +105,15 @@ public class ParsePatch {
 				} else if (line.startsWith("-") && !line.startsWith("---")) {
 					Element min = doc.createElement("remline");
 					min.setAttribute("at", Integer.toString(addLineCount++));
+					min.setAttribute("content", line.substring(1));
 					lineCount++;
 					off.appendChild(min);
 				} else if (line.startsWith("+")) {
-					Element min = doc.createElement("addline");
-					min.setAttribute("at", Integer.toString(addLineCount++ - lineCount));
+					Element add = doc.createElement("addline");
+					add.setAttribute("at", Integer.toString(addLineCount++ - lineCount));
+					add.setAttribute("content", line.substring(1));
 					//lineCount++;
-					off.appendChild(min);
+					off.appendChild(add);
 				} else {
 					addLineCount++;
 				}
@@ -120,6 +122,7 @@ public class ParsePatch {
             //write out new xml
             TransformerFactory tFactory = TransformerFactory.newInstance();
             Transformer transformer = tFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             
@@ -172,6 +175,7 @@ public class ParsePatch {
 	        //write out new xml
             TransformerFactory tFactory = TransformerFactory.newInstance();
             Transformer transformer = tFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             
@@ -186,6 +190,17 @@ public class ParsePatch {
 	private static int getFileLength(String fileName, IProject proj) {
 		String path = WORKSPACE_PATH + File.separator + proj.getName() + File.separator + fileName;
 		File countFile = new File(path);
+		if(!countFile.exists()){
+			//try under src directory
+			String newpath = WORKSPACE_PATH + File.separator + proj.getName() + File.separator + "src" + File.separator + fileName;
+			countFile = new File(newpath);
+			
+			if(!countFile.exists()){
+				//try without src directory
+				newpath = path.replaceFirst("src", ".");
+				countFile = new File(newpath);
+			}
+		}
 		int count = 0;
 
 		BufferedReader read;

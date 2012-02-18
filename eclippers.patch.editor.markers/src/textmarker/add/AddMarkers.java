@@ -26,12 +26,12 @@ public class AddMarkers {
 		if(!applied)
 			lineNum = lineNum + 3;
 				
-		IPath path = new Path(proj.getName() + File.separator + fileName);
+		int index = fileName.indexOf(proj.getName());
+		IPath path = new Path(fileName.substring(index));
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 		File javaFile = new File(ParseXMLForMarkers.WORKSPACE_ROOT + file.getFullPath().toPortableString());
 
 		try {
-			IFile iFile = file;
 			IMarker marker = null;
 			boolean conflict = false;
 			
@@ -57,10 +57,10 @@ public class AddMarkers {
 			if (!conflict) {
 				
 				if(!applied){
-					marker = iFile.createMarker("patchAppliesMarker");
+					marker = file.createMarker("patchAppliesMarker");
 					marker.setAttribute(IMarker.MESSAGE, patchName + " patch will apply here!");
 				} else {
-					marker = iFile.createMarker("patchLinesMarker");
+					marker = file.createMarker("patchLinesMarker");
 					marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here!");
 					marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum - 1, javaFile));
 					marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum, javaFile));
@@ -80,7 +80,9 @@ public class AddMarkers {
 	}
 
 	public static void clearMarkers(String fileName, String ownerName, IProject proj) {
-		IPath path = new Path(proj.getName() + File.separator + fileName);
+
+		int index = fileName.indexOf(proj.getName());
+		IPath path = new Path(fileName.substring(index));
 		IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 		
 		try {

@@ -7,8 +7,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -48,8 +51,21 @@ public class ParseXMLForMarkers {
 							String fileName = fileElement.getAttribute("name") + ".java";
 							String filePath = fileElement.getAttribute("package");
 							filePath = filePath.replaceAll("\\.", "/");
-							String fullPath = filePath + File.separator + fileName;
+							String fullPath = WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + filePath + File.separator + fileName;
 							
+							File checkFile = new File(fullPath);
+							if(!checkFile.exists()){
+								//try without src directory
+								fullPath = fullPath.replaceFirst("src", ".");
+								checkFile = new File(fullPath);
+								
+								if(!checkFile.exists()){
+									//try under src directory
+									fullPath = WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "src" + File.separator + filePath + File.separator + fileName;
+									checkFile = new File(fullPath);
+								}
+							}
+
 							AddMarkers.clearMarkers(fullPath, patchName, proj);
 							
 							if(applied.equals("true")){
@@ -59,7 +75,7 @@ public class ParseXMLForMarkers {
 										Element offsetElement = (Element)n3.item(k);
 										int lineNumber = Integer.parseInt(offsetElement.getAttribute("at"));
 
-										AddMarkers.addMarkerToFile(patchName, fullPath, lineNumber, proj, true);
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, true);
 									}
 								}
 							} else {					
@@ -70,7 +86,7 @@ public class ParseXMLForMarkers {
 										int lineNumber = Integer.parseInt(offsetElement.getAttribute("start"));
 										int length = Integer.parseInt(offsetElement.getAttribute("length"));;
 	
-										AddMarkers.addMarkerToFile(patchName, fullPath, lineNumber, proj, false);
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, false);
 									}
 								}
 							}

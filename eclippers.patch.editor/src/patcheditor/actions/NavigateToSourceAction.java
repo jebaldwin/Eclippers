@@ -46,6 +46,15 @@ public class NavigateToSourceAction {
 		IPath path = new Path(proj.getName() + File.separator +  fileName);
 		
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+		if(!file.exists()){
+			//try without src
+			file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path.toString().replaceFirst("src", ".")));
+			
+			//else try with src
+			if(!file.exists()){
+				file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(proj.getName() + File.separator +  "src" + File.separator + fileName));
+			}
+		}
 		
 		ParseXMLForMarkers.parseXML(proj);
 		
