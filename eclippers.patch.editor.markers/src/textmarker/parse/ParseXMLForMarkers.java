@@ -25,7 +25,7 @@ public class ParseXMLForMarkers {
 
 	public static void parseXML(IProject proj) {
 
-		File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patchData.xml");
+		File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patch.cfg");
 
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

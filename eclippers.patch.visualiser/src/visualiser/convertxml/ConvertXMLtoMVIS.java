@@ -81,7 +81,7 @@ public class ConvertXMLtoMVIS {
 
 		try {
 			File xslFile = new File(conversionFile);
-			File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patchData.xml");
+			File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patch.cfg");
 
 			TransformerFactory transFact = TransformerFactory.newInstance();
 

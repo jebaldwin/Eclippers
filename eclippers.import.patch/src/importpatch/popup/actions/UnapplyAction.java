@@ -37,7 +37,7 @@ public class UnapplyAction implements IObjectActionDelegate {
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-		ParsePatch.markAsPatched(patchFile.getFullPath().toFile(), proj, false);
+		ParsePatch.markAsPatched(patchFile.getFullPath().toFile(), null, proj, false);
 	}
 
 	/**

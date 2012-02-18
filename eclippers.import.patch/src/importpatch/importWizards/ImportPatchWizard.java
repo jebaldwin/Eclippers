@@ -37,10 +37,8 @@ public class ImportPatchWizard extends Wizard implements IImportWizard {
 		IProject proj = file.getProject();
         
         //do parsing here
-        String pathName = file.getLocation().toPortableString();
-        String fileName = file.getName();
         try {
-			ParsePatch.parse(pathName, fileName, proj);
+			ParsePatch.parse(file, proj, null, null);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;

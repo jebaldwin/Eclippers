@@ -40,7 +40,7 @@ public class ApplyAction implements IObjectActionDelegate {
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-		ParsePatch.markAsPatched(patchFile.getFullPath().toFile(), proj, true);
+		ParsePatch.markAsPatched(patchFile.getFullPath().toFile(), null, proj, true);
 	}
 
 	/**

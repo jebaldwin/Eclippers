@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,6 +17,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.w3c.dom.Document;
@@ -24,12 +26,23 @@ import org.w3c.dom.NodeList;
 
 public class ParsePatch {
 
-	private static final String XML_FILE = "patchData.xml";
+	private static final String XML_FILE = "patch.cfg";
 	private static String WORKSPACE_PATH = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 
-	public static void parse(String pathName, String fileName, IProject proj) throws IOException {
-		int index = pathName.indexOf(fileName);
-		File xmlFile = new File(pathName.substring(0, index) + XML_FILE);
+	/**
+	 * Transforms contents of a patch into XML and stores it into patch.cfg in the root of the IProject passed in
+	 * 
+	 * @param patchFile the patch file, can be null if altContents is provided
+	 * @param proj project into which the patch configuration (patch.cfg) file will be saved
+	 * @param altContents the contents of a patch file passed in as a string, will be used if the patchFile is null
+	 * @param patchTitle name of the patching functionality if patchFile is not supplied
+	 * @throws IOException
+	 */
+	public static void parse(IFile patchFile, IProject proj, String altContents, String patchTitle) throws IOException {
+		String patchPath = patchFile.getLocation().toPortableString();
+		String fileName = patchFile.getName();
+		int index = patchPath.indexOf(fileName);
+		File xmlFile = new File(patchPath.substring(0, index) + XML_FILE);
 		if(!xmlFile.exists()){
 			xmlFile.createNewFile();
 			
@@ -37,11 +50,10 @@ public class ParsePatch {
 			output.write("<globalPatchData></globalPatchData>");
 			output.close();
 		}
-		File patchFile = new File(pathName);
-		parseToXML(patchFile, xmlFile, proj);
+		parseToXML(new File(patchPath), xmlFile, proj, altContents, patchTitle);
 	}
 
-	private static void parseToXML(File patchFile, File xmlFile, IProject proj) {
+	private static void parseToXML(File patchFile, File xmlFile, IProject proj, String altContents, String patchTitle) {
 
 		try {
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -49,14 +61,22 @@ public class ParsePatch {
             Document doc = docBuilder.parse (xmlFile);
             Element root = doc.getDocumentElement();
             
-            BufferedReader input = new BufferedReader(new FileReader(patchFile));
+            
             String line;
 			String fileName = null;
 			int addLineCount = 0, offsetDiff = 0;
 			int lineCount = 0;
+			String patchName = "";
+			BufferedReader input;
 			
-			int index = patchFile.getName().indexOf('.');
-			String patchName = patchFile.getName().substring(0, index);
+			if(patchFile != null){
+				input = new BufferedReader(new FileReader(patchFile));
+				int index = patchFile.getName().indexOf('.');
+				patchName = patchFile.getName().substring(0, index);
+			} else {
+				input =  new BufferedReader(new StringReader(altContents));
+				patchName = patchTitle;
+			}
 			Element patchEl = doc.createElement("patch");
 			patchEl.setAttribute("name", patchName);
 			patchEl.setAttribute("applied", "false");
@@ -85,7 +105,7 @@ public class ParsePatch {
 					patchEl.appendChild(diffStart);
 				} else if (line.startsWith("@@")) {
 					// contains starting line and number of lines changed				
-					index = line.indexOf(',');
+					int index = line.indexOf(',');
 					int startAt = Integer.parseInt(line.substring(4, index));
 					index = line.lastIndexOf('+');
 					int index2 = line.lastIndexOf(',');
@@ -156,7 +176,15 @@ public class ParsePatch {
 		return array;
 	}
 	
-	public static void markAsPatched(File patchFile, IProject proj, boolean patched){
+	/**
+	 * Alters the patch.cfg file to mark a patch as applied
+	 * 
+	 * @param patchFile the patch file, can be null if patchTitle is provided
+	 * @param patchTitle name of the patching functionality, used if patchFile is not supplied
+	 * @param proj the project whose patch.cfg file should be altered
+	 * @param patched true if the patch is applied, and false if the patch is not applied
+	 */
+	public static void markAsPatched(File patchFile, String patchTitle, IProject proj, boolean patched){
 		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + XML_FILE);
 		
 		//mark as patched in xml
