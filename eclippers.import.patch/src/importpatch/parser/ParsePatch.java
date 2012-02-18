@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class ParsePatch {
 
@@ -58,6 +59,7 @@ public class ParsePatch {
 			String patchName = patchFile.getName().substring(0, index);
 			Element patchEl = doc.createElement("patch");
 			patchEl.setAttribute("id", patchName);
+			patchEl.setAttribute("applied", "false");
 			root.appendChild(patchEl);
 			Element diffStart = null;
 			Element off = null;
@@ -157,7 +159,14 @@ public class ParsePatch {
 	        
 	        int index = patchFile.getName().indexOf('.');
 	        String patchName = patchFile.getName().substring(0, index);
-	        Element el = doc.getElementById(patchName);
+	        NodeList els = doc.getElementsByTagName("patch");
+	        Element el = null;
+	        for (int i = 0; i < els.getLength(); i++) {
+				if(((Element)els.item(i)).getAttribute("id").equals(patchName)){
+					el = (Element)els.item(i);
+					break;
+				}
+			}
 	        el.setAttribute("applied", new Boolean(patched).toString());
 	        
 	        //write out new xml

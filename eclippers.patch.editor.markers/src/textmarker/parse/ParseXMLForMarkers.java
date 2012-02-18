@@ -52,17 +52,25 @@ public class ParseXMLForMarkers {
 							
 							AddMarkers.clearMarkers(fullPath, patchName, proj);
 							
-							NodeList n3 = fileElement.getElementsByTagName("offset");
-							if(n3 != null && n3.getLength() > 0) {
-								for(int k = 0; k < n3.getLength(); k++) {
-									Element offsetElement = (Element)n3.item(k);
-									int lineNumber = Integer.parseInt(offsetElement.getAttribute("start"));
-									int length = Integer.parseInt(offsetElement.getAttribute("length"));;
+							if(applied.equals("true")){
+								NodeList n3 = fileElement.getElementsByTagName("addline");
+								if(n3 != null && n3.getLength() > 0) {
+									for(int k = 0; k < n3.getLength(); k++) {
+										Element offsetElement = (Element)n3.item(k);
+										int lineNumber = Integer.parseInt(offsetElement.getAttribute("at"));
 
-									if(applied.equals("true")){
-										AddMarkers.addMarkerToFile(patchName, fullPath, lineNumber, length, proj, true);
-									} else {
-										AddMarkers.addMarkerToFile(patchName, fullPath, lineNumber, length, proj, false);
+										AddMarkers.addMarkerToFile(patchName, fullPath, lineNumber, proj, true);
+									}
+								}
+							} else {					
+								NodeList n3 = fileElement.getElementsByTagName("offset");
+								if(n3 != null && n3.getLength() > 0) {
+									for(int k = 0; k < n3.getLength(); k++) {
+										Element offsetElement = (Element)n3.item(k);
+										int lineNumber = Integer.parseInt(offsetElement.getAttribute("start"));
+										int length = Integer.parseInt(offsetElement.getAttribute("length"));;
+	
+										AddMarkers.addMarkerToFile(patchName, fullPath, lineNumber, proj, false);
 									}
 								}
 							}

@@ -26,18 +26,18 @@
             nameFilter="*patch"
             objectClass="org.eclipse.core.resources.IFile">
          <action
-               class="importpatch.popup.actions.ApplyAction"
-               enablesFor="+"
-               icon="icons/validate.gif"
-               id="eclippers.importpatch.appliedAction"
-               label="Mark as Applied">
-         </action>
-         <action
                class="importpatch.popup.actions.UnapplyAction"
                enablesFor="+"
                icon="icons/clear.gif"
                id="eclippers.importpatch.notAppliedAction"
                label="Mark as Not Applied">
+         </action>
+         <action
+               class="importpatch.popup.actions.ApplyAction"
+               enablesFor="+"
+               icon="icons/validate.gif"
+               id="eclippers.importpatch.appliedAction"
+               label="Mark as Applied">
          </action>
       </objectContribution>
    </extension>

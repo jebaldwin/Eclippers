@@ -40,10 +40,24 @@
             overviewRulerPreferenceValue="true"/>
       <specification
             annotationType="patchLinesAnnotation"
-            icon="icons/plug.gif"
-            label="Patch has Applied "
-            overviewRulerPreferenceValue="true">
-      </specification>
-   </extension> 
+            icon="icons/plus.gif"
+            label="Patch Lines"
+             colorPreferenceKey="AnnotationColor"
+             colorPreferenceValue="95,238,255"
+             contributesToHeader="false"
+             highlightPreferenceKey="HighLight"
+             highlightPreferenceValue="true"
+             includeOnPreferencePage="true"
+             overviewRulerPreferenceKey="OverviewRuler"
+             overviewRulerPreferenceValue="true"
+             presentationLayer="1"
+             symbolicIcon="info"
+             textPreferenceKey="AnnotationOccurance"
+             textPreferenceValue="false"
+             textStylePreferenceKey="AnnotationTextStyle"
+             textStylePreferenceValue="NONE"
+             verticalRulerPreferenceKey="VerticalRuler"
+             verticalRulerPreferenceValue="true"/>
+  </extension>
 
 </plugin>
