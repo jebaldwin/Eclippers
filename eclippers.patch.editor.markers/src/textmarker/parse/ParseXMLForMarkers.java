@@ -67,7 +67,6 @@ public class ParseXMLForMarkers {
 							}
 
 							AddMarkers.clearMarkers(fullPath, patchName, proj);
-							
 							if(applied.equals("true")){
 								NodeList n3 = fileElement.getElementsByTagName("addline");
 								if(n3 != null && n3.getLength() > 0) {
@@ -103,13 +102,13 @@ public class ParseXMLForMarkers {
 										NodeList n4 = offsetElement.getElementsByTagName("remline");									
 										for(int j1 = 0; j1 < n4.getLength(); j1++) {
 											Element r = (Element)n4.item(j1);
-											lines += r.getAttribute("content") + "\n";
+											lines += r.getAttribute("content").replaceAll("\t", "") + "\n";
 										}
 										lines += "\nLines that will be added:\n";
 										n4 = offsetElement.getElementsByTagName("addline");									
 										for(int j1 = 0; j1 < n4.getLength(); j1++) {
 											Element r = (Element)n4.item(j1);
-											lines += r.getAttribute("content") + "\n";
+											lines += r.getAttribute("content").replaceAll("\t", "") + "\n";
 										}
 										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, lines, false, true);
 									}

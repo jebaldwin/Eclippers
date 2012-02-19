@@ -24,26 +24,25 @@
             markerSeverity="0"
             markerType="patchAppliesMarker"
             name="patchAppliesAnnotation"
-            super="org.eclipse.ui.workbench.texteditor.warning"/>
+            super="org.eclipse.ui.workbench.texteditor.info"/>
       <type
             markerSeverity="0"
             markerType="patchLinesMarker"
             name="patchLinesAnnotation"
-            super="org.eclipse.ui.workbench.texteditor.warning">
+            super="org.eclipse.ui.workbench.texteditor.info">
       </type>
       <type
             markerSeverity="0"
             markerType="patchLinesRemovedMarker"
             name="patchLinesRemovedAnnotation"
-            super="org.eclipse.ui.workbench.texteditor.warning">
+            super="org.eclipse.ui.workbench.texteditor.info">
       </type>
   </extension>
   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
       <specification
             annotationType="patchAppliesAnnotation"
             icon="icons/applies.gif"
-            label="Patch will Apply"
-            overviewRulerPreferenceValue="true"/>
+            label="Patch will Apply"/>
       <specification
             annotationType="patchLinesAnnotation"
             icon="icons/plus.gif"
@@ -94,5 +93,14 @@
            markerType="patchAppliesMarker">
      </updater>
   </extension>
-
+	<extension point="org.eclipse.ui.menus">
+	<menuContribution
+	    class="textmarker.actions.MarkerContributionFactory"
+	    locationURI="popup:#AbstractTextEditorRulerContext?after=additions">
+	  <dynamic
+	         class="textmarker.actions.MarkerMenuContribution"
+	         id="eclippers.patch.MarkerMenuContribution">
+	  </dynamic>
+	</menuContribution>
+	</extension>
 </plugin>

@@ -58,7 +58,9 @@ public class AddMarkers {
 				
 				if(!applied){
 					marker = file.createMarker("patchAppliesMarker");
-					marker.setAttribute(IMarker.MESSAGE, patchName + " patch will apply here. \r" + code);
+					marker.setAttribute(IMarker.MESSAGE, patchName + " patch will apply here. Right click to see changes.");
+					marker.setAttribute("description", code);
+					marker.setAttribute("name", patchName);
 				} else {
 					if(lineAdded){
 						marker = file.createMarker("patchLinesMarker");
@@ -75,7 +77,7 @@ public class AddMarkers {
 			}
 
 			marker.setAttribute(IMarker.LINE_NUMBER, lineNum);
-			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
 			
 			//set navigation to patch file
 			//NavigateToSourceAction.openFile(patchName + ".patch", proj);
