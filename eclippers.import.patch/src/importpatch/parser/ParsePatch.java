@@ -83,6 +83,7 @@ public class ParsePatch {
 			Element off = null;
 			int lengthBefore = 0;
 			int lengthAfter = 0;
+			int lineOfPatch = 1;
 			
             while((line = input.readLine()) != null){
             	if (line.startsWith("+++")) {
@@ -122,23 +123,26 @@ public class ParsePatch {
 					off.setAttribute("start", Integer.toString(startAt));
 					off.setAttribute("startApplied", Integer.toString(startAtSecondFile));
 					off.setAttribute("length", Integer.toString(Math.abs(lengthAfter - lengthBefore)));
-
+					off.setAttribute("patchLine", Integer.toString(lineOfPatch));
 					diffStart.appendChild(off);
 				} else if (line.startsWith("-") && !line.startsWith("---")) {
 					Element min = doc.createElement("remline");
 					min.setAttribute("at", Integer.toString(addLineCount++));
 					min.setAttribute("content", line.substring(1));
+					min.setAttribute("patchLine", Integer.toString(lineOfPatch));
 					lineCount++;
 					off.appendChild(min);
 				} else if (line.startsWith("+")) {
 					Element add = doc.createElement("addline");
 					add.setAttribute("at", Integer.toString(addLineCount++ - lineCount));
 					add.setAttribute("content", line.substring(1));
+					add.setAttribute("patchLine", Integer.toString(lineOfPatch));
 					//lineCount++;
 					off.appendChild(add);
 				} else {
 					addLineCount++;
 				}
+            	lineOfPatch++;
             }
             
             //write out new xml

@@ -102,5 +102,13 @@
 	         id="eclippers.patch.MarkerMenuContribution">
 	  </dynamic>
 	</menuContribution>
+ <menuContribution
+       class="textmarker.actions.NavigateFromMarkerContributionFactory"
+       locationURI="popup:#AbstractTextEditorRulerContext?after=additions">
+    <dynamic
+          class="textmarker.actions.NavigateFromMarkerMenuContribution"
+          id="eclippers.patch.NavMarkerMenuContribution">
+    </dynamic>
+ </menuContribution>
 	</extension>
 </plugin>

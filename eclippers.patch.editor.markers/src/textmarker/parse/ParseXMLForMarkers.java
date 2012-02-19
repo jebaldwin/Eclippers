@@ -76,7 +76,8 @@ public class ParseXMLForMarkers {
 										int newLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("startApplied"));
 										int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
 										String codeLine = offsetElement.getAttribute("content");
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, true);
+										int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, true, patchLine);
 									}
 								}
 
@@ -88,7 +89,8 @@ public class ParseXMLForMarkers {
 										int newLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("startApplied"));
 										int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
 										String codeLine = offsetElement.getAttribute("content");
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false);
+										int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false, patchLine);
 									}
 								}
 							} else {					
@@ -96,6 +98,7 @@ public class ParseXMLForMarkers {
 								if(n3 != null && n3.getLength() > 0) {
 									for(int k = 0; k < n3.getLength(); k++) {
 										Element offsetElement = (Element)n3.item(k);
+										int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
 										int lineNumber = Integer.parseInt(offsetElement.getAttribute("start"));
 										//enumerate lines of code
 										String lines = "Lines that will be removed:\n";
@@ -110,7 +113,7 @@ public class ParseXMLForMarkers {
 											Element r = (Element)n4.item(j1);
 											lines += r.getAttribute("content").replaceAll("\t", "") + "\n";
 										}
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, lines, false, true);
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, lines, false, true, patchLine);
 									}
 								}
 							}
