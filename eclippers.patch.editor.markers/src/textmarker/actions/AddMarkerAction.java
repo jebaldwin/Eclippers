@@ -31,6 +31,22 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 	public void run(IAction action) {
 		IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
 		IProject proj = ((FileEditorInput)ei).getFile().getProject();
+		
+		//TODO putting in lines, adding markers and forcing close with no save might work best 
+		/*CompilationUnitEditor part = (CompilationUnitEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		ITextEditor editor = (ITextEditor)part;
+		IDocumentProvider dp = editor.getDocumentProvider();
+		IDocument doc = dp.getDocument(editor.getEditorInput());
+		try {
+		    doc.replace(10, 0, "test\ntesting\n");
+		    //TODO make sure not editable if I go this way
+		    //TODO any way to make sure it isn't dirty on change?
+		    AddMarkers.addMarkerToFile("test", "/test.patch", 10, 2, proj, true);
+		    part.dispose();
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}*/
+		
 		ParseXMLForMarkers.parseXML(proj);
 	}
 
