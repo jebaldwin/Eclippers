@@ -14,6 +14,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ui.texteditor.MarkerAnnotationPreferences;
 
 import textmarker.actions.NavigateToSourceAction;
 import textmarker.parse.ParseXMLForMarkers;
@@ -24,7 +25,7 @@ public class AddMarkers {
 
 		//allow for default context numbers
 		if(!applied)
-			lineNum = lineNum + 3;
+			lineNum = lineNum + 3;		
 				
 		int index = fileName.indexOf(proj.getName());
 		IPath path = new Path(fileName.substring(index));
@@ -69,8 +70,8 @@ public class AddMarkers {
 					} else {
 						marker = file.createMarker("patchLinesRemovedMarker");
 						marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line removed.");
-						marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum - 1, javaFile));
-						marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum, javaFile));						
+						marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum, javaFile));
+						marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum + 1, javaFile));						
 					}
 				}
 			}

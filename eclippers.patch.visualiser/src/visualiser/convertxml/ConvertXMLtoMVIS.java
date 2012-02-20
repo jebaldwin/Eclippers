@@ -83,19 +83,21 @@ public class ConvertXMLtoMVIS {
 			File xslFile = new File(conversionFile);
 			File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patch.cfg");
 
-			TransformerFactory transFact = TransformerFactory.newInstance();
-
-			try {
-				Transformer trans = transFact.newTransformer(new StreamSource(xslFile));
-				StringWriter stringWriter = new StringWriter();
-				StreamResult streamResult = new StreamResult(stringWriter);
-				trans.transform(new StreamSource(xmlFile), streamResult);
-				String output = stringWriter.toString();
-				stringWriter.close();			
-				return output;
-			} catch (TransformerException e) {
-				e.printStackTrace();
-			} 
+			if(xmlFile.exists()){
+				TransformerFactory transFact = TransformerFactory.newInstance();
+	
+				try {
+					Transformer trans = transFact.newTransformer(new StreamSource(xslFile));
+					StringWriter stringWriter = new StringWriter();
+					StreamResult streamResult = new StreamResult(stringWriter);
+					trans.transform(new StreamSource(xmlFile), streamResult);
+					String output = stringWriter.toString();
+					stringWriter.close();			
+					return output;
+				} catch (TransformerException e) {
+					e.printStackTrace();
+				} 
+			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
