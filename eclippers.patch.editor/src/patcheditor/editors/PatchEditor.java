@@ -22,5 +22,24 @@ public class PatchEditor extends TextEditor {
 		colorManager.dispose();
 		super.dispose();
 	}
+	
+	@Override
+	public boolean isEditable() {
+	    return false;
+	}
 
+	@Override
+	public boolean isEditorInputModifiable() {
+	    return false;
+	}
+
+	@Override
+	public boolean isEditorInputReadOnly() {
+	    return true;
+	}
+
+	@Override
+	public boolean isDirty() {
+	    return false;
+	}
 }

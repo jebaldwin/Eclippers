@@ -86,7 +86,36 @@ public class AddMarkers {
 			e.printStackTrace();
 		}
 	}
+	
+	/*
+	public static void addRemovedMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean lineAdded, int patchLine) {
+		
+		int index = fileName.indexOf(proj.getName());
+		IPath path = new Path(fileName.substring(index));
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+		File javaFile = new File(ParseXMLForMarkers.WORKSPACE_ROOT + file.getFullPath().toPortableString());
 
+		try {
+			IMarker[] markers = file.findMarkers("patchLinesMarker", false, 0);
+			IMarker marker = null;
+			boolean conflict = false;
+			marker = file.createMarker("patchLinesRemovedMarker");
+			marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line removed.");
+			marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum, javaFile));
+			marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum + 1, javaFile));		
+			marker.setAttribute("name", patchName);
+			marker.setAttribute("project", proj);
+			marker.setAttribute("patched", true);
+			marker.setAttribute("patchLine", patchLine);
+			marker.setAttribute(IMarker.LINE_NUMBER, lineNum);
+			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
+			
+			//update lines by 1 after this line 
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+	}*/
+	
 	public static void clearMarkers(String fileName, String ownerName, IProject proj) {
 
 		int index = fileName.indexOf(proj.getName());

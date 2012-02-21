@@ -44,12 +44,12 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 		IProject proj = ((FileEditorInput)ei).getFile().getProject();
 		ParseXMLForMarkers.parseXML(proj);
 		
-		//TODO putting in lines, adding markers and forcing close with no save might work best 
+		//putting in lines, adding markers and forcing close with no save might work best 
 		//this happens after the previously highlighted line because of the line numbers
 		CompilationUnitEditor part = (CompilationUnitEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		
 		//only mess up the editor if code opened with our editor
-		/*if(part instanceof PatchContainingEditor){
+		if(part instanceof PatchContainingEditor){
 			part = (PatchContainingEditor) part;
 			ITextEditor editor = (ITextEditor) part;
 			IDocumentProvider dp = editor.getDocumentProvider();
@@ -58,16 +58,13 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 				//TODO this needs to move to parseXML method
 				String code = "test\n";
 			    doc.replace(0, 0, code);
-			    //TODO make sure not user editable if I go this way
-			    //TODO any way to make sure it isn't dirty on change?
 			    String fullpatchpath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString() + File.separator + proj.getName() + "/org/jhotdraw/samples/net/NetApp.java";
 			    //TODO adding lines moves other lines' colors forward that amount
 			    AddMarkers.addMarkerToFile("AddEllipseFigure", fullpatchpath, 0, proj, code, true, false, 0);
-			   // part.dispose();
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}
-		}*/
+		}
 	}
 
 	/**

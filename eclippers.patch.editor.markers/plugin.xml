@@ -122,7 +122,7 @@
            extensions="java"
            icon="icons/icallout_obj.gif"
            id="eclippers.patch.editor.markers.embedded"
-           name="Embedded Patch Editor">
+           name="Diff Viewer">
         <contentTypeBinding
               contentTypeId="eclippers.patch.editor.markers.embedded">
         </contentTypeBinding>
