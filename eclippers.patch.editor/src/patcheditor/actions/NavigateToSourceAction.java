@@ -55,8 +55,8 @@ public class NavigateToSourceAction {
 				file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(proj.getName() + File.separator +  "src" + File.separator + fileName));
 			}
 		}
-		
-		ParseXMLForMarkers.parseXML(proj);
+		//TODO fix this
+		//ParseXMLForMarkers.parseXML(proj);
 		
 		try {
 			ITextEditor editor = (ITextEditor) IDE.openEditor(PatchEditorPlugin
