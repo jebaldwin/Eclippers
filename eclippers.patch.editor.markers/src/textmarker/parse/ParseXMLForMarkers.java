@@ -2,6 +2,7 @@ package textmarker.parse;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,10 +13,17 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import eclippers.patch.editor.extension.PatchContainingEditor;
 
 import textmarker.add.AddMarkers;
 
@@ -23,15 +31,17 @@ public class ParseXMLForMarkers {
 	
 	public static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 
-	public static void parseXML(IProject proj) {
-
+	public static void parseXML(IProject proj, CompilationUnitEditor part) {
+		System.out.println("parse xml");
 		File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patch.cfg");
-
+		ArrayList<RemovedLine> remLines = new ArrayList<RemovedLine>();
+		
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder;
 			builder = factory.newDocumentBuilder();
 			Document document = builder.parse(xmlFile);
+			String patchName = "";
 			
 			//get the root element
 			Element rootElement = document.getDocumentElement();
@@ -41,7 +51,7 @@ public class ParseXMLForMarkers {
 			if(nl != null && nl.getLength() > 0) {
 				for(int i = 0 ; i < nl.getLength();i++) {
 					Element patchElement = (Element)nl.item(i);
-					String patchName = patchElement.getAttribute("name");
+					patchName = patchElement.getAttribute("name");
 					String applied = patchElement.getAttribute("applied");
 					
 					NodeList n2 = patchElement.getElementsByTagName("file");
@@ -77,7 +87,8 @@ public class ParseXMLForMarkers {
 										int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
 										String codeLine = offsetElement.getAttribute("content");
 										int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, true, patchLine);
+										
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, true, patchLine);				
 									}
 								}
 
@@ -90,7 +101,11 @@ public class ParseXMLForMarkers {
 										int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
 										String codeLine = offsetElement.getAttribute("content");
 										int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false, patchLine);
+										int tempLineNum = lineNumber + (newLine - originalLine);
+										
+										//AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false, patchLine);
+										RemovedLine rl = new RemovedLine(tempLineNum, newLine, originalLine, codeLine, patchLine, checkFile);
+										remLines.add(rl);
 									}
 								}
 							} else {					
@@ -121,6 +136,28 @@ public class ParseXMLForMarkers {
 					}
 				}
 			}
+			
+			//add removed lines at the end
+			//TODO why isn't this the same every time?
+			/*RemovedLine[] els = remLines.toArray(new RemovedLine[remLines.size()]);
+			IDocument doc = null;
+			//only mess up the editor if code opened with our editor
+			if(part instanceof PatchContainingEditor){
+				part = (PatchContainingEditor) part;
+				ITextEditor editor = (ITextEditor) part;
+				IDocumentProvider dp = editor.getDocumentProvider();
+				doc = dp.getDocument(editor.getEditorInput());
+			}
+			
+			for (int i = 0; i < els.length; i++) {
+				RemovedLine offsetElement = els[i];
+				try {
+					doc.replace(AddMarkers.getCharStart(offsetElement.lineNumber-1, offsetElement.checkFile), 0, offsetElement.codeLine + "\n");
+					AddMarkers.addRemovedMarkerToFile(patchName, offsetElement.checkFile.getAbsolutePath(), offsetElement.lineNumber-2, proj, offsetElement.codeLine, true, offsetElement.patchLine);
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}		
+			}*/
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
@@ -129,4 +166,25 @@ public class ParseXMLForMarkers {
 			e.printStackTrace();
 		}
 	}
+	
+}
+
+class RemovedLine{
+	
+	public int lineNumber;
+	public int newLine;
+	public int originalLine;
+	public String codeLine;
+	public int patchLine;
+	public File checkFile;
+	
+	public RemovedLine(int lineNumber, int newLine, int originalLine, String codeLine, int patchLine, File checkFile) {
+		this.lineNumber = lineNumber;
+		this.newLine = newLine;
+		this.originalLine = originalLine;
+		this.codeLine = codeLine;
+		this.patchLine = patchLine;
+		this.checkFile = checkFile;
+	}
+			
 }

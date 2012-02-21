@@ -70,8 +70,8 @@ public class AddMarkers {
 					} else {
 						marker = file.createMarker("patchLinesRemovedMarker");
 						marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line removed.");
-						marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum, javaFile));
-						marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum + 1, javaFile));						
+						marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum - 1, javaFile));
+						marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum, javaFile));						
 					}
 				}
 			}
@@ -87,7 +87,7 @@ public class AddMarkers {
 		}
 	}
 	
-	/*
+	
 	public static void addRemovedMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean lineAdded, int patchLine) {
 		
 		int index = fileName.indexOf(proj.getName());
@@ -98,7 +98,6 @@ public class AddMarkers {
 		try {
 			IMarker[] markers = file.findMarkers("patchLinesMarker", false, 0);
 			IMarker marker = null;
-			boolean conflict = false;
 			marker = file.createMarker("patchLinesRemovedMarker");
 			marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line removed.");
 			marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum, javaFile));
@@ -111,10 +110,18 @@ public class AddMarkers {
 			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
 			
 			//update lines by 1 after this line 
+			for (int i = 0; i < markers.length; i++) {
+				IMarker curr = markers[i];
+				if(curr.getAttribute(IMarker.LINE_NUMBER, 0) >= lineNum){
+					marker.setAttribute(IMarker.LINE_NUMBER, lineNum+1);
+					marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum+1, javaFile));
+					marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum+2, javaFile));	
+				}
+			}
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 	
 	public static void clearMarkers(String fileName, String ownerName, IProject proj) {
 
@@ -139,7 +146,7 @@ public class AddMarkers {
 		}
 	}
 	
-	private static int getCharStart(int lineNum, File javaFile) {
+	public static int getCharStart(int lineNum, File javaFile) {
 
 		try {
 			BufferedReader read = new BufferedReader(new FileReader(javaFile));

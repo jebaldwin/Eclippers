@@ -1,14 +1,9 @@
 package textmarker.actions;
 
-import java.io.File;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -17,12 +12,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
 
-import eclippers.patch.editor.extension.PatchContainingEditor;
-
-import textmarker.add.AddMarkers;
 import textmarker.parse.ParseXMLForMarkers;
 
 public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
@@ -42,29 +32,14 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 	public void run(IAction action) {
 		IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
 		IProject proj = ((FileEditorInput)ei).getFile().getProject();
-		ParseXMLForMarkers.parseXML(proj);
 		
 		//putting in lines, adding markers and forcing close with no save might work best 
 		//this happens after the previously highlighted line because of the line numbers
 		CompilationUnitEditor part = (CompilationUnitEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		
-		//only mess up the editor if code opened with our editor
-		if(part instanceof PatchContainingEditor){
-			part = (PatchContainingEditor) part;
-			ITextEditor editor = (ITextEditor) part;
-			IDocumentProvider dp = editor.getDocumentProvider();
-			IDocument doc = dp.getDocument(editor.getEditorInput());
-			try {
-				//TODO this needs to move to parseXML method
-				String code = "test\n";
-			    doc.replace(0, 0, code);
-			    String fullpatchpath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString() + File.separator + proj.getName() + "/org/jhotdraw/samples/net/NetApp.java";
-			    //TODO adding lines moves other lines' colors forward that amount
-			    AddMarkers.addMarkerToFile("AddEllipseFigure", fullpatchpath, 0, proj, code, true, false, 0);
-			} catch (BadLocationException e) {
-				e.printStackTrace();
-			}
-		}
+		part.doRevertToSaved();
+		//TODO expand all members
+		ParseXMLForMarkers.parseXML(proj, part);
+
 	}
 
 	/**
@@ -80,12 +55,14 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 			
 			if (selected instanceof IResource) {
 				IResource resource = (IResource) selected;
-				ParseXMLForMarkers.parseXML(resource.getProject());
+				//TODO refresh?
+				//ParseXMLForMarkers.parseXML(resource.getProject());
 			}
 		} else if (selection instanceof TextSelection) {
 			IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
 			IProject proj = ((FileEditorInput)ei).getFile().getProject();
-			ParseXMLForMarkers.parseXML(proj);
+			//TODO refresh?
+			//ParseXMLForMarkers.parseXML(proj);
 		}
 	}
 	
