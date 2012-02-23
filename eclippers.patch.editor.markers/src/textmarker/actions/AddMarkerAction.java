@@ -37,9 +37,7 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 		//this happens after the previously highlighted line because of the line numbers
 		CompilationUnitEditor part = (CompilationUnitEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		part.doRevertToSaved();
-		//TODO expand all members
 		ParseXMLForMarkers.parseXML(proj, part);
-
 	}
 
 	/**

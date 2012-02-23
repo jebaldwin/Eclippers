@@ -32,7 +32,7 @@ public class ParseXMLForMarkers {
 	public static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 
 	public static void parseXML(IProject proj, CompilationUnitEditor part) {
-		System.out.println("parse xml");
+
 		File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patch.cfg");
 		ArrayList<RemovedLine> remLines = new ArrayList<RemovedLine>();
 		
@@ -138,8 +138,7 @@ public class ParseXMLForMarkers {
 			}
 			
 			//add removed lines at the end
-			//TODO why isn't this the same every time?
-			/*RemovedLine[] els = remLines.toArray(new RemovedLine[remLines.size()]);
+			RemovedLine[] els = remLines.toArray(new RemovedLine[remLines.size()]);
 			IDocument doc = null;
 			//only mess up the editor if code opened with our editor
 			if(part instanceof PatchContainingEditor){
@@ -152,12 +151,12 @@ public class ParseXMLForMarkers {
 			for (int i = 0; i < els.length; i++) {
 				RemovedLine offsetElement = els[i];
 				try {
-					doc.replace(AddMarkers.getCharStart(offsetElement.lineNumber-1, offsetElement.checkFile), 0, offsetElement.codeLine + "\n");
-					AddMarkers.addRemovedMarkerToFile(patchName, offsetElement.checkFile.getAbsolutePath(), offsetElement.lineNumber-2, proj, offsetElement.codeLine, true, offsetElement.patchLine);
+					doc.replace(AddMarkers.getCharStart(offsetElement.lineNumber-1, offsetElement.checkFile)-1, 0, offsetElement.codeLine + "\n");
+					AddMarkers.addRemovedMarkerToFileTwo(patchName, offsetElement.checkFile.getAbsolutePath(), offsetElement.lineNumber-1, proj, offsetElement.codeLine, true, offsetElement.patchLine, doc.get());
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}		
-			}*/
+			}
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {

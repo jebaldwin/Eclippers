@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -14,9 +15,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ui.texteditor.MarkerAnnotationPreferences;
 
-import textmarker.actions.NavigateToSourceAction;
 import textmarker.parse.ParseXMLForMarkers;
 
 public class AddMarkers {
@@ -64,9 +63,11 @@ public class AddMarkers {
 				} else {
 					if(lineAdded){
 						marker = file.createMarker("patchLinesMarker");
+						marker .setAttribute("description", code);
 						marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line added.");
-						marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum - 1, javaFile));
-						marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum, javaFile));
+						int lineStart = getCharStart(lineNum - 1, javaFile);
+						marker.setAttribute(IMarker.CHAR_START, lineStart);
+						marker.setAttribute(IMarker.CHAR_END, lineStart + code.length());
 					} else {
 						marker = file.createMarker("patchLinesRemovedMarker");
 						marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line removed.");
@@ -123,6 +124,51 @@ public class AddMarkers {
 		}
 	}
 	
+	public static void addRemovedMarkerToFileTwo(String patchName, String fileName, int lineNum, IProject proj, String code, boolean lineAdded, int patchLine, String fileContents) {
+		//TODO this works the first time the file is opened, but a refresh after that does strange higlighting things
+		int index = fileName.indexOf(proj.getName());
+		IPath path = new Path(fileName.substring(index));
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+
+		try {
+			IMarker[] markers = file.findMarkers("patchLinesMarker", false, 0);
+			IMarker marker = null;
+			marker = file.createMarker("patchLinesRemovedMarker");
+			marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line removed.");
+			int lineStart = getCharStartFromString(lineNum, fileContents)-1;
+			marker.setAttribute(IMarker.CHAR_START, lineStart);
+			marker.setAttribute(IMarker.CHAR_END, lineStart + code.length());		
+			marker.setAttribute("name", patchName);
+			marker.setAttribute("project", proj);
+			marker.setAttribute("patched", true);
+			marker.setAttribute("patchLine", patchLine);
+			marker.setAttribute(IMarker.LINE_NUMBER, lineNum);
+			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
+			
+			//update lines by 1 after this line 
+			for (int i = 0; i < markers.length; i++) {
+				IMarker curr = markers[i];
+
+				if(curr.getAttribute(IMarker.LINE_NUMBER, 0) >= lineNum){					
+					int prevCharStart = (Integer) curr.getAttribute(IMarker.CHAR_START);
+					int prevCharEnd = (Integer) curr.getAttribute(IMarker.CHAR_END);
+					
+					marker = file.createMarker("patchLinesMarker");
+					marker.setAttribute(IMarker.LINE_NUMBER, (Integer) curr.getAttribute(IMarker.LINE_NUMBER));
+					marker.setAttribute(IMarker.MESSAGE, "BOO!");
+					marker.setAttribute(IMarker.LINE_NUMBER, (Integer) curr.getAttribute(IMarker.LINE_NUMBER) + 1);
+					marker.setAttribute(IMarker.CHAR_START, prevCharStart + code.length());
+					marker.setAttribute(IMarker.CHAR_END, prevCharEnd + code.length() + 1);
+					
+					//had to create a new one and delete the old to update the line number
+					curr.delete();					
+				}
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void clearMarkers(String fileName, String ownerName, IProject proj) {
 
 		int index = fileName.indexOf(proj.getName());
@@ -147,7 +193,6 @@ public class AddMarkers {
 	}
 	
 	public static int getCharStart(int lineNum, File javaFile) {
-
 		try {
 			BufferedReader read = new BufferedReader(new FileReader(javaFile));
 			int lineNumber = 0;
@@ -172,6 +217,31 @@ public class AddMarkers {
 			e.printStackTrace();
 		}
 
+		return 0;
+	}
+	
+	public static int getCharStartFromString(int lineNum, String javaFile) {
+
+		BufferedReader read = new BufferedReader(new StringReader(javaFile));
+		int lineNumber = 0;
+		String line = "";
+		int charPos = 0;
+		
+		try {
+			while((line = read.readLine()) != null) {
+				if(lineNum == lineNumber) {
+					break;
+				}
+				
+				charPos += line.length() + 2; //2 for carriage return
+				lineNumber++;
+			}
+			
+			return charPos;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		return 0;
 	}
 }
