@@ -168,7 +168,7 @@ public class ParseXMLForMarkers {
 			
 			//TODO reveal affected files in package explorer
 			PackageDecoratorLightweight.getDemoDecorator().refresh();
-	
+
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
