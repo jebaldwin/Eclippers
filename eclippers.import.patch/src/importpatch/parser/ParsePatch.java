@@ -92,12 +92,19 @@ public class ParsePatch {
 					fileName = array[1];
 					diffStart = doc.createElement("file");
 					
+					//changes for git patches with /a and /b
+					if(fileName.startsWith("a/") || fileName.startsWith("b/")){
+						//TODO extra check that it was made with git just in case they have an "a" or "b" package
+						fileName = fileName.replace("a/", "/");
+						fileName = fileName.replace("b/", "/");
+					}
+					
 					// need to get length of file
 					int length = getFileLength(fileName, proj);
 					String[] results = splitPath(fileName);
 					String packageName = results[0];
 					fileName = results[1];
-
+					
 					diffStart.setAttribute("package", packageName);
 					diffStart.setAttribute("name", fileName);
 					diffStart.setAttribute("length", Integer.toString(length));

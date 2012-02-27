@@ -9,8 +9,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -30,6 +32,12 @@ public class NavigateToSourceAction {
 			lineNumber = Integer.parseInt(lineSelected.substring(4, endIndex));
 			String[] array = diffLine.split("\\s");
 			String pathName = array[6];
+			if(!new File(pathName).exists()){
+				//git pattern of patch file
+				pathName = array[10];
+				//cut out a/ or b/ at the beginning
+				pathName = pathName.substring(2);
+			}
 			openFile(pathName, lineNumber, projectName);
 		} else if (lineSelected.startsWith("diff")) {
 			//get filename out of text
@@ -59,10 +67,16 @@ public class NavigateToSourceAction {
 		//ParseXMLForMarkers.parseXML(proj);
 		
 		try {
-			ITextEditor editor = (ITextEditor) IDE.openEditor(PatchEditorPlugin
+			IEditorPart editor = (IEditorPart) IDE.openEditor(PatchEditorPlugin
 					.getDefault().getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage(), file, true);
-			gotoLine(lineNumber - 1, editor);
+			
+			if(editor instanceof ITextEditor){
+				gotoLine(lineNumber - 1, (ITextEditor)editor);
+			}
+			if(editor instanceof FormEditor){
+				gotoLineInFormEditor(lineNumber - 1, (FormEditor) editor);				
+			}
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
@@ -89,5 +103,10 @@ public class NavigateToSourceAction {
 		} catch (BadLocationException x) {
 			// ignore
 		}
+	}
+	
+	private static void gotoLineInFormEditor(int line, FormEditor editor) {
+		//TODO how to do this?
+		
 	}
 }
