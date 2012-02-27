@@ -9,10 +9,17 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.viewers.LabelDecorator;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
+import org.eclipse.ui.IDecoratorManager;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.w3c.dom.Document;
@@ -22,14 +29,17 @@ import org.xml.sax.SAXException;
 
 import textmarker.add.AddMarkers;
 import eclippers.patch.editor.extension.PatchContainingEditor;
+import eclippers.patch.editor.markers.PackageDecoratorLightweight;
 
 public class ParseXMLForMarkers {
 	
+	public static ArrayList<IPath> affected;
 	public static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 
 	public static void parseXML(IProject proj, CompilationUnitEditor part) {
-
+		
 		File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patch.cfg");
+		affected = new ArrayList<IPath>();
 		ArrayList<RemovedLine> remLines = new ArrayList<RemovedLine>();
 		
 		try {
@@ -58,6 +68,7 @@ public class ParseXMLForMarkers {
 							String filePath = fileElement.getAttribute("package");
 							filePath = filePath.replaceAll("\\.", "/");
 							String fullPath = WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + filePath + File.separator + fileName;
+							String projPath = filePath + File.separator + fileName;
 							
 							File checkFile = new File(fullPath);
 							if(!checkFile.exists()){
@@ -73,6 +84,10 @@ public class ParseXMLForMarkers {
 							}
 
 							AddMarkers.clearMarkers(fullPath, patchName, proj);
+							IResource file = proj.findMember(projPath);
+							if(!affected.contains(file))
+								affected.add(file.getFullPath());
+									
 							if(applied.equals("true")){
 								NodeList n3 = fileElement.getElementsByTagName("addline");
 								if(n3 != null && n3.getLength() > 0) {
@@ -142,17 +157,21 @@ public class ParseXMLForMarkers {
 				ITextEditor editor = (ITextEditor) part;
 				IDocumentProvider dp = editor.getDocumentProvider();
 				doc = dp.getDocument(editor.getEditorInput());
+				
+				for (int i = 0; i < els.length; i++) {
+					RemovedLine offsetElement = els[i];
+					try {
+						//TODO strikethrough?
+						doc.replace(AddMarkers.getCharStart(offsetElement.lineNumber-1, offsetElement.checkFile)-1, 0, offsetElement.codeLine + "\n");
+						AddMarkers.addRemovedMarkerToFile(patchName, offsetElement.checkFile.getAbsolutePath(), offsetElement.lineNumber-1, proj, offsetElement.codeLine, true, offsetElement.patchLine, doc.get());
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}		
+				}
 			}
 			
-			for (int i = 0; i < els.length; i++) {
-				RemovedLine offsetElement = els[i];
-				try {
-					doc.replace(AddMarkers.getCharStart(offsetElement.lineNumber-1, offsetElement.checkFile)-1, 0, offsetElement.codeLine + "\n");
-					AddMarkers.addRemovedMarkerToFile(patchName, offsetElement.checkFile.getAbsolutePath(), offsetElement.lineNumber-1, proj, offsetElement.codeLine, true, offsetElement.patchLine, doc.get());
-				} catch (BadLocationException e) {
-					e.printStackTrace();
-				}		
-			}
+			//TODO reveal affected files in package explorer
+			PackageDecoratorLightweight.getDemoDecorator().refresh();
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {

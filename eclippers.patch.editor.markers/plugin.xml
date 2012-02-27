@@ -128,5 +128,17 @@
         </contentTypeBinding>
      </editor>
   </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="true"
+            class="eclippers.patch.editor.markers.PackageDecoratorLightweight"
+            id="eclippers.patch.editor.markers.decorator1"
+            label="Patch Affected Files"
+            lightweight="true"
+            objectClass="org.eclipse.core.resources.IResource"
+            state="true">
+      </decorator>
+   </extension>
 	
 </plugin>
