@@ -11,6 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.text.BadLocationException;
@@ -46,6 +47,21 @@ public class ParseXMLForMarkers {
 			
 			//get the root element
 			Element rootElement = document.getDocumentElement();
+			
+			//hide every file in the project
+			IResource[] res;
+			try {
+				res = proj.members();
+				
+				for (int i = 0; i < res.length; i++) {
+					IResource r = res[i];
+					r.setHidden(true);
+				}
+			} catch (CoreException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 
 			//get each patch element
 			NodeList nl = rootElement.getElementsByTagName("patch");
@@ -80,7 +96,11 @@ public class ParseXMLForMarkers {
 
 							AddMarkers.clearMarkers(fullPath, patchName, proj);
 							IResource file = proj.findMember(projPath);
-	
+							try {
+								file.setHidden(false);
+							} catch (CoreException e) {
+								e.printStackTrace();
+							}
 							if(!affected.contains(file))
 								affected.add(file.getFullPath());
 									
@@ -167,8 +187,8 @@ public class ParseXMLForMarkers {
 			}
 			
 			//TODO reveal affected files in package explorer
-			PackageDecoratorLightweight.getDemoDecorator().refresh();
-
+			PackageDecoratorLightweight.getDecorator().refresh();
+			
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
