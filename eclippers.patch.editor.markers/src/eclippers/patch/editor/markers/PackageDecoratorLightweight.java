@@ -30,13 +30,13 @@ public class PackageDecoratorLightweight extends LabelProvider implements ILight
 
 	public void refresh() {
 		// Get the Demo decorator
-		PackageDecoratorLightweight demoDecorator = getDemoDecorator();
-		if (demoDecorator == null) {
+		PackageDecoratorLightweight decorator = getDecorator();
+		if (decorator == null) {
 			return;
 		} else {
 			// Fire a label provider changed event to decorate the
 			// resources whose image needs to be updated
-			demoDecorator.fireLabelEvent(new LabelProviderChangedEvent(demoDecorator));//, resourcesToBeUpdated.toArray()));
+			decorator.fireLabelEvent(new LabelProviderChangedEvent(decorator));//, resourcesToBeUpdated.toArray()));
 		}
 	}
 
@@ -51,7 +51,7 @@ public class PackageDecoratorLightweight extends LabelProvider implements ILight
 		} 
 	}
 
-	public static PackageDecoratorLightweight getDemoDecorator() {
+	public static PackageDecoratorLightweight getDecorator() {
 		IDecoratorManager decoratorManager = TextMarkerPlugin.getDefault().getWorkbench().getDecoratorManager();
 
 		if (decoratorManager.getEnabled("eclippers.patch.editor.markers.decorator1")) {
