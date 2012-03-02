@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.internal.core.CompilationUnit;
@@ -41,14 +42,17 @@ public class PackageDecoratorLightweight extends LabelProvider implements ILight
 	}
 
 	public void decorate(Object element, IDecoration decoration) {
-		if (element instanceof File) {
-			File el = (File) element;
-			IPath res = el.getFullPath();
+		IResource resfile = (IResource) element;
+		IPath res = resfile.getFullPath();
 
-			if (ParseXMLForMarkers.affected.contains(res)) {
+		//highlight parent containers of the affected file
+		for(int i = 0; i < ParseXMLForMarkers.affected.size(); i++){
+			IPath path = ParseXMLForMarkers.affected.get(i);
+			if(path.toString().contains(res.toString())){
 				decoration.setBackgroundColor(color);
+				break;
 			}
-		} 
+		}
 	}
 
 	public static PackageDecoratorLightweight getDecorator() {
