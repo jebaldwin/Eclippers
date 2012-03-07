@@ -38,7 +38,7 @@ public class ParsePatch {
 	 * @param patchTitle name of the patching functionality if patchFile is not supplied
 	 * @throws IOException
 	 */
-	public static void parse(IFile patchFile, IProject proj, String altContents, String patchTitle) throws IOException {
+	public static void parse(IFile patchFile, IProject proj, String altContents, String patchTitle, boolean applied) throws IOException {
 		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + XML_FILE);
 		if(!xmlFile.exists()){
 			xmlFile.createNewFile();
@@ -49,10 +49,14 @@ public class ParsePatch {
 			
 			//TODO create ifile for this and set it to hidden, visible for now since need to debug
 		}
-		parseToXML(new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + patchFile.getName()), xmlFile, proj, altContents, patchTitle);
+		if(patchFile != null){
+			parseToXML(new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + patchFile.getName()), xmlFile, proj, altContents, patchTitle, applied);
+		} else {
+			parseToXML(null, xmlFile, proj, altContents, patchTitle, applied);
+		}
 	}
 
-	private static void parseToXML(File patchFile, File xmlFile, IProject proj, String altContents, String patchTitle) {
+	private static void parseToXML(File patchFile, File xmlFile, IProject proj, String altContents, String patchTitle, boolean applied) {
 
 		try {
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -77,7 +81,7 @@ public class ParsePatch {
 			}
 			Element patchEl = doc.createElement("patch");
 			patchEl.setAttribute("name", patchName);
-			patchEl.setAttribute("applied", "false");
+			patchEl.setAttribute("applied", Boolean.toString(applied));
 			root.appendChild(patchEl);
 			Element diffStart = null;
 			Element off = null;
