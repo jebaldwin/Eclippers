@@ -8,9 +8,11 @@ import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 
 import textmarker.parse.ParseXMLForMarkers;
@@ -35,9 +37,16 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 		
 		//putting in lines, adding markers and forcing close with no save might work best 
 		//this happens after the previously highlighted line because of the line numbers
-		CompilationUnitEditor part = (CompilationUnitEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		part.doRevertToSaved();
-		ParseXMLForMarkers.parseXML(proj, part);
+		IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+
+		if(editor instanceof CompilationUnitEditor){
+			CompilationUnitEditor part = (CompilationUnitEditor)editor;
+			part.doRevertToSaved();
+		} else if(editor instanceof TextEditor){
+			TextEditor part = (TextEditor)editor;
+			part.doRevertToSaved();
+		} 
+		ParseXMLForMarkers.parseXML(proj, editor);
 	}
 
 	/**

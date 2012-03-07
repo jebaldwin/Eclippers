@@ -17,6 +17,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.navigator,
  org.eclipse.ui.navigator.resources
 Eclipse-LazyStart: true
-Export-Package: textmarker.actions,
+Export-Package: eclippers.patch.editor.extension,
+ textmarker.actions,
  textmarker.parse
 Import-Package: org.eclipse.core.expressions
