@@ -38,8 +38,8 @@ public class ParsePatch {
 	 * @param patchTitle name of the patching functionality if patchFile is not supplied
 	 * @throws IOException
 	 */
-	public static void parse(IFile patchFile, IProject proj, String altContents, String patchTitle, boolean applied) throws IOException {
-		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + XML_FILE);
+	public static void parse(IFile patchFile, IProject proj, String altContents, String patchTitle, boolean applied) throws IOException {		
+		File xmlFile = new File(proj.getLocation() + File.separator + File.separator + XML_FILE);
 		if(!xmlFile.exists()){
 			xmlFile.createNewFile();
 			
