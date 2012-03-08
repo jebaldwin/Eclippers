@@ -29,13 +29,12 @@ import eclippers.patch.editor.markers.PackageDecoratorLightweight;
 
 public class ParseXMLForMarkers {
 	
-	public static ArrayList<IPath> affected;
+	public static ArrayList<IPath> affected = new ArrayList<IPath>();
 	public static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 
 	public static void parseXML(IProject proj, IEditorPart part) {
 		
 		File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patch.cfg");
-		affected = new ArrayList<IPath>();
 		ArrayList<RemovedLine> remLines = new ArrayList<RemovedLine>();
 		
 		try {
@@ -82,8 +81,9 @@ public class ParseXMLForMarkers {
 							AddMarkers.clearMarkers(fullPath, patchName, proj);
 							IResource file = proj.findMember(projPath);
 
-							if(!affected.contains(file))
+							if(!affected.contains(file) && file != null){
 								affected.add(file.getFullPath());
+							}
 									
 							if(applied.equals("true")){
 								NodeList n3 = fileElement.getElementsByTagName("addline");

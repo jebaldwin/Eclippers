@@ -23,7 +23,7 @@ import textmarker.parse.ParseXMLForMarkers;
 
 public class PackageDecoratorLightweight extends LabelProvider implements ILightweightLabelDecorator {
 
-	private final static Color color = new Color(Display.getDefault(), 0xF5, 0xE6, 0x3D);
+	private final static Color color = new Color(Display.getDefault(), 193,255,193);
 
 	public boolean isLabelProperty(Object element, String property) {
 		return false;
