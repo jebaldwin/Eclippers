@@ -28,14 +28,21 @@ import eclippers.patch.editor.extension.PatchContainingEditor;
 import eclippers.patch.editor.markers.PackageDecoratorLightweight;
 
 public class ParseXMLForMarkers {
-	
+
+	//these are for plugins using this tool
 	public static ArrayList<IPath> tempAffected = new ArrayList<IPath>();
+	public static ArrayList<RemovedLine> tempAffectedLines = new ArrayList<RemovedLine>();
+	public static ArrayList<RemovedLine> tempRemovedLines = new ArrayList<RemovedLine>();
+	
+	
 	public static ArrayList<IPath> affected = new ArrayList<IPath>();
 	public static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 	
 	public static void parseXML(IProject proj, IEditorPart part, String pathPrefix, String filter) {
 
 		tempAffected = new ArrayList<IPath>();
+		tempRemovedLines = new ArrayList<RemovedLine>();
+		
 		File xmlFile = new File(proj.getLocation() + File.separator + pathPrefix + File.separator + "patch.cfg");
 		ArrayList<RemovedLine> remLines = new ArrayList<RemovedLine>();
 		
@@ -103,7 +110,11 @@ public class ParseXMLForMarkers {
 										String codeLine = offsetElement.getAttribute("content");
 										int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
 										
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, true, patchLine);				
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, true, patchLine);
+										RemovedLine rl = new RemovedLine(lineNumber, newLine, originalLine, codeLine, patchLine, checkFile);
+										
+										//TODO JB:put filter code here
+										tempAffectedLines.add(rl);
 									}
 								}
 
@@ -121,6 +132,9 @@ public class ParseXMLForMarkers {
 										//AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false, patchLine);
 										RemovedLine rl = new RemovedLine(tempLineNum, newLine, originalLine, codeLine, patchLine, checkFile);
 										remLines.add(rl);
+										
+										//TODO JB:put filter code here
+										tempRemovedLines.add(rl);
 									}
 								}
 							} else {					
@@ -188,22 +202,4 @@ public class ParseXMLForMarkers {
 	
 }
 
-class RemovedLine{
-	
-	public int lineNumber;
-	public int newLine;
-	public int originalLine;
-	public String codeLine;
-	public int patchLine;
-	public File checkFile;
-	
-	public RemovedLine(int lineNumber, int newLine, int originalLine, String codeLine, int patchLine, File checkFile) {
-		this.lineNumber = lineNumber;
-		this.newLine = newLine;
-		this.originalLine = originalLine;
-		this.codeLine = codeLine;
-		this.patchLine = patchLine;
-		this.checkFile = checkFile;
-	}
-			
-}
+
