@@ -24,6 +24,7 @@ import textmarker.parse.ParseXMLForMarkers;
 public class PackageDecoratorLightweight extends LabelProvider implements ILightweightLabelDecorator {
 
 	private final static Color color = new Color(Display.getDefault(), 193,255,193);
+	private final static Color white = new Color(Display.getDefault(), 255,255,255);
 
 	public boolean isLabelProperty(Object element, String property) {
 		return false;
@@ -51,6 +52,8 @@ public class PackageDecoratorLightweight extends LabelProvider implements ILight
 			if(path.toString().contains(res.toString())){
 				decoration.setBackgroundColor(color);
 				break;
+			} else {
+				decoration.setBackgroundColor(white);
 			}
 		}
 	}
