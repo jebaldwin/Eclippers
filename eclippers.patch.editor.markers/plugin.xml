@@ -118,7 +118,7 @@
      <editor
            class="eclippers.patch.editor.extension.PatchContainingEditor"
            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-           default="true"
+           default="false"
            extensions="java"
            icon="icons/icallout_obj.gif"
            id="eclippers.patch.editor.markers.embedded"
