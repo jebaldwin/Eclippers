@@ -188,7 +188,7 @@ public class PatchMarkupProvider extends SimpleMarkupProvider implements
 			ConvertXMLtoMVIS.convertMarkupVis(proj);
 
 			try {
-				File fileURL = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Markup.mvis");
+				File fileURL = new File(proj.getLocation() + File.separator + "Markup.mvis");
 				InputStream in = new FileInputStream(fileURL);
 				loadMarkups(in);
 				in.close();

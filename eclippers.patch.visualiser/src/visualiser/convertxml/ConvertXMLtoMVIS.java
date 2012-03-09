@@ -28,7 +28,7 @@ public class ConvertXMLtoMVIS {
 	public static void convertContentVis(IProject proj) {
 
 		try {
-			File contentFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Content.vis");
+			File contentFile = new File(proj.getLocation() + File.separator + "Content.vis");
 			contentFile.delete();
 			contentFile.createNewFile();
 			
@@ -54,7 +54,7 @@ public class ConvertXMLtoMVIS {
 	public static void convertMarkupVis(IProject proj) {
 
 		try {
-			File markupFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Markup.mvis");
+			File markupFile = new File(proj.getLocation() + File.separator + "Markup.mvis");
 			markupFile.delete();
 			markupFile.createNewFile();
 			
@@ -81,7 +81,7 @@ public class ConvertXMLtoMVIS {
 
 		try {
 			File xslFile = new File(conversionFile);
-			File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patch.cfg");
+			File xmlFile = new File(proj.getLocation() + File.separator + "patch.cfg");
 
 			if(xmlFile.exists()){
 				TransformerFactory transFact = TransformerFactory.newInstance();

@@ -178,7 +178,7 @@ public class PatchContentProvider extends SimpleContentProvider implements ISele
 
 				if (numberOfGroupsDefined() == 0) {
 					try {
-						File fileURL = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "Content.vis");
+						File fileURL = new File(proj.getLocation() + File.separator + "Content.vis");
 						InputStream in = new FileInputStream(fileURL);
 						loadVisContents(in);
 						in.close();
