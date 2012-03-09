@@ -38,7 +38,7 @@ public class ImportPatchWizard extends Wizard implements IImportWizard {
         
         //do parsing here
         try {
-			ParsePatch.parse(file, proj, null, null, false);
+			ParsePatch.parse(file, proj, null, null, false, "");
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;

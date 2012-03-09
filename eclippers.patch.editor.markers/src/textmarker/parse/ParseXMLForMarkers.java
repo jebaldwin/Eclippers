@@ -29,12 +29,14 @@ import eclippers.patch.editor.markers.PackageDecoratorLightweight;
 
 public class ParseXMLForMarkers {
 	
+	public static ArrayList<IPath> tempAffected = new ArrayList<IPath>();
 	public static ArrayList<IPath> affected = new ArrayList<IPath>();
 	public static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
+	
+	public static void parseXML(IProject proj, IEditorPart part, String pathPrefix, String filter) {
 
-	public static void parseXML(IProject proj, IEditorPart part) {
-		
-		File xmlFile = new File(WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "patch.cfg");
+		tempAffected = new ArrayList<IPath>();
+		File xmlFile = new File(proj.getLocation() + File.separator + pathPrefix + File.separator + "patch.cfg");
 		ArrayList<RemovedLine> remLines = new ArrayList<RemovedLine>();
 		
 		try {
@@ -62,7 +64,7 @@ public class ParseXMLForMarkers {
 							String fileName = fileElement.getAttribute("name");// + ".java";
 							String filePath = fileElement.getAttribute("package");
 							filePath = filePath.replaceAll("\\.", "/");
-							String fullPath = WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + filePath + File.separator + fileName;
+							String fullPath = proj.getLocation() + File.separator + filePath + File.separator + fileName;
 							String projPath = filePath + File.separator + fileName;
 							
 							File checkFile = new File(fullPath);
@@ -73,7 +75,7 @@ public class ParseXMLForMarkers {
 								
 								if(!checkFile.exists()){
 									//try under src directory
-									fullPath = WORKSPACE_ROOT + File.separator + proj.getName() + File.separator + "src" + File.separator + filePath + File.separator + fileName;
+									fullPath = proj.getLocation() + File.separator + "src" + File.separator + filePath + File.separator + fileName;
 									checkFile = new File(fullPath);
 								}
 							}
@@ -83,6 +85,11 @@ public class ParseXMLForMarkers {
 
 							if(!affected.contains(file) && file != null){
 								affected.add(file.getFullPath());
+							}
+							if(filter != null && patchName.equals(filter)){
+								if(!tempAffected.contains(file) && file != null){
+									tempAffected.add(file.getFullPath());
+								}
 							}
 									
 							if(applied.equals("true")){

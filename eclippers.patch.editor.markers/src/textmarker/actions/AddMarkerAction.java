@@ -19,6 +19,7 @@ import textmarker.parse.ParseXMLForMarkers;
 
 public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
+	
 	/**
 	 * The constructor.
 	 */
@@ -46,7 +47,7 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 			TextEditor part = (TextEditor)editor;
 			part.doRevertToSaved();
 		} 
-		ParseXMLForMarkers.parseXML(proj, editor);
+		ParseXMLForMarkers.parseXML(proj, editor, null, null);
 	}
 
 	/**

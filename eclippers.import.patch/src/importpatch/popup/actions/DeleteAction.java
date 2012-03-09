@@ -38,7 +38,7 @@ public class DeleteAction implements IObjectActionDelegate {
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-		ParsePatch.removePatch(patchFile.getName(), proj);
+		ParsePatch.removePatch(patchFile.getName(), proj, "");
 		
 		//delete patch file from project
 		try {

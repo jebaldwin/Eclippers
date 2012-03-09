@@ -37,7 +37,7 @@ public class ConvertXMLtoMVIS {
 			if (bundle != null) {
 				xslPath = bundle.getLocation().replace("reference:file:/", "") + "src" + File.separator + "visualiser" + File.separator + "convertxml" + File.separator + CONTENT_XSL;
 			}
-			String contents = xslConvert(xslPath, proj);
+			String contents = xslConvert(xslPath, proj, "");
 			
 			//need to remove top xml generated lines from contents
 			int index = contents.indexOf("\n");
@@ -63,7 +63,7 @@ public class ConvertXMLtoMVIS {
 			if (bundle != null) {
 				xslPath = bundle.getLocation().replace("reference:file:/", "") + "src" + File.separator + "visualiser" + File.separator + "convertxml" + File.separator + MARKUP_XSL;
 			}
-			String contents = xslConvert(xslPath, proj);
+			String contents = xslConvert(xslPath, proj, "");
 			
 			//need to remove top xml generated lines from contents
 			int index = contents.indexOf("\n");
@@ -77,11 +77,11 @@ public class ConvertXMLtoMVIS {
 		}
 	}
 
-	public static String xslConvert(String conversionFile, IProject proj) {
+	public static String xslConvert(String conversionFile, IProject proj, String pathPrefix) {
 
 		try {
 			File xslFile = new File(conversionFile);
-			File xmlFile = new File(proj.getLocation() + File.separator + "patch.cfg");
+			File xmlFile = new File(proj.getLocation() + File.separator + pathPrefix + File.separator + "patch.cfg");
 
 			if(xmlFile.exists()){
 				TransformerFactory transFact = TransformerFactory.newInstance();

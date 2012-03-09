@@ -38,8 +38,8 @@ public class ParsePatch {
 	 * @param patchTitle name of the patching functionality if patchFile is not supplied
 	 * @throws IOException
 	 */
-	public static void parse(IFile patchFile, IProject proj, String altContents, String patchTitle, boolean applied) throws IOException {		
-		File xmlFile = new File(proj.getLocation() + File.separator + File.separator + XML_FILE);
+	public static void parse(IFile patchFile, IProject proj, String altContents, String patchTitle, boolean applied, String pathPrefix) throws IOException {		
+		File xmlFile = new File(proj.getLocation() + File.separator + File.separator + pathPrefix + File.separator + XML_FILE);
 		if(!xmlFile.exists()){
 			xmlFile.createNewFile();
 			
@@ -201,8 +201,8 @@ public class ParsePatch {
 	 * @param proj the project whose patch.cfg file should be altered
 	 * @param patched true if the patch is applied, and false if the patch is not applied
 	 */
-	public static void markAsPatched(File patchFile, String patchTitle, IProject proj, boolean patched){
-		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + XML_FILE);
+	public static void markAsPatched(File patchFile, String patchTitle, IProject proj, boolean patched, String pathPrefix){
+		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + pathPrefix + File.separator + XML_FILE);
 		
 		//mark as patched in xml
 		try{
@@ -242,8 +242,8 @@ public class ParsePatch {
 		}
 	}
 	
-	public static void removePatch(String patchName, IProject proj){
-		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + XML_FILE);
+	public static void removePatch(String patchName, IProject proj, String pathPrefix){
+		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + pathPrefix + File.separator + XML_FILE);
 		
 		//remove element from xml
 		try{

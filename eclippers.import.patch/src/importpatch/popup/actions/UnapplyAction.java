@@ -39,7 +39,7 @@ public class UnapplyAction implements IObjectActionDelegate {
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-		ParsePatch.markAsPatched(patchFile.getFullPath().toFile(), null, proj, false);
+		ParsePatch.markAsPatched(patchFile.getFullPath().toFile(), null, proj, false, "");
 		
 		//rename extension to patch from apatch
 		String WORKSPACE_PATH = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
