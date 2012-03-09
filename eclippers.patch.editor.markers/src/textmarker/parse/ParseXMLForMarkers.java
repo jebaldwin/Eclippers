@@ -41,6 +41,7 @@ public class ParseXMLForMarkers {
 	public static void parseXML(IProject proj, IEditorPart part, String pathPrefix, String filter) {
 
 		tempAffected = new ArrayList<IPath>();
+		tempAffectedLines = new ArrayList<RemovedLine>();
 		tempRemovedLines = new ArrayList<RemovedLine>();
 		
 		File xmlFile = new File(proj.getLocation() + File.separator + pathPrefix + File.separator + "patch.cfg");
@@ -113,8 +114,11 @@ public class ParseXMLForMarkers {
 										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, true, patchLine);
 										RemovedLine rl = new RemovedLine(lineNumber, newLine, originalLine, codeLine, patchLine, checkFile);
 										
-										//TODO JB:put filter code here
-										tempAffectedLines.add(rl);
+										if(filter != null && patchName.equals(filter)){
+											if(!tempAffected.contains(file) && file != null){
+												tempAffectedLines.add(rl);
+											}
+										}
 									}
 								}
 
@@ -133,8 +137,11 @@ public class ParseXMLForMarkers {
 										RemovedLine rl = new RemovedLine(tempLineNum, newLine, originalLine, codeLine, patchLine, checkFile);
 										remLines.add(rl);
 										
-										//TODO JB:put filter code here
-										tempRemovedLines.add(rl);
+										if(filter != null && patchName.equals(filter)){
+											if(!tempAffected.contains(file) && file != null){
+												tempRemovedLines.add(rl);
+											}
+										}
 									}
 								}
 							} else {					
