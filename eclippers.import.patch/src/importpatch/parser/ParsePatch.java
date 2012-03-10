@@ -39,7 +39,7 @@ public class ParsePatch {
 	 * @throws IOException
 	 */
 	public static void parse(IFile patchFile, IProject proj, String altContents, String patchTitle, boolean applied, String pathPrefix) throws IOException {		
-		File xmlFile = new File(proj.getLocation() + File.separator + File.separator + pathPrefix + File.separator + XML_FILE);
+		File xmlFile = new File(proj.getLocation() + File.separator + pathPrefix + File.separator + XML_FILE);
 		if(!xmlFile.exists()){
 			xmlFile.createNewFile();
 			
@@ -50,7 +50,7 @@ public class ParsePatch {
 			//TODO create ifile for this and set it to hidden, visible for now since need to debug
 		}
 		if(patchFile != null){
-			parseToXML(new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + patchFile.getName()), xmlFile, proj, altContents, patchTitle, applied);
+			parseToXML(new File(proj.getLocation() + File.separator + patchFile.getName()), xmlFile, proj, altContents, patchTitle, applied);
 		} else {
 			parseToXML(null, xmlFile, proj, altContents, patchTitle, applied);
 		}
@@ -202,7 +202,7 @@ public class ParsePatch {
 	 * @param patched true if the patch is applied, and false if the patch is not applied
 	 */
 	public static void markAsPatched(File patchFile, String patchTitle, IProject proj, boolean patched, String pathPrefix){
-		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + pathPrefix + File.separator + XML_FILE);
+		File xmlFile = new File(proj.getLocation() + pathPrefix + File.separator + XML_FILE);
 		
 		//mark as patched in xml
 		try{
@@ -243,7 +243,7 @@ public class ParsePatch {
 	}
 	
 	public static void removePatch(String patchName, IProject proj, String pathPrefix){
-		File xmlFile = new File(WORKSPACE_PATH + File.separator + proj.getName() + File.separator + pathPrefix + File.separator + XML_FILE);
+		File xmlFile = new File(proj.getLocation() + File.separator + pathPrefix + File.separator + XML_FILE);
 		
 		//remove element from xml
 		try{
@@ -283,11 +283,11 @@ public class ParsePatch {
 	}
 
 	private static int getFileLength(String fileName, IProject proj) {
-		String path = WORKSPACE_PATH + File.separator + proj.getName() + File.separator + fileName;
+		String path = proj.getLocation() + fileName;
 		File countFile = new File(path);
 		if(!countFile.exists()){
 			//try under src directory
-			String newpath = WORKSPACE_PATH + File.separator + proj.getName() + File.separator + "src" + File.separator + fileName;
+			String newpath = proj.getLocation() + "src" + File.separator + fileName;
 			countFile = new File(newpath);
 			
 			if(!countFile.exists()){

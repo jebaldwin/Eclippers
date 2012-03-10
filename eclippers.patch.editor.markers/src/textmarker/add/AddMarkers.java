@@ -30,12 +30,12 @@ public class AddMarkers {
 		// allow for default context numbers
 		if (!applied)
 			lineNum = lineNum + 3;
-
+	
 		int index = fileName.indexOf(proj.getName());
-		IPath path = new Path(fileName.substring(index));
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-		File javaFile = new File(ParseXMLForMarkers.WORKSPACE_ROOT + file.getFullPath().toPortableString());
-
+		IPath path = new Path(fileName);
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+		File javaFile = new File(fileName);
+		
 		try {
 			IMarker marker = null;
 			boolean conflict = false;

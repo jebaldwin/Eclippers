@@ -42,9 +42,8 @@ public class UnapplyAction implements IObjectActionDelegate {
 		ParsePatch.markAsPatched(patchFile.getFullPath().toFile(), null, proj, false, "");
 		
 		//rename extension to patch from apatch
-		String WORKSPACE_PATH = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
-		java.io.File oFile = new java.io.File(WORKSPACE_PATH + java.io.File.separator + patchFile.getFullPath().toString());
-		java.io.File nFile = new java.io.File(WORKSPACE_PATH + java.io.File.separator + patchFile.getFullPath().toString().replace("patched", "patch"));
+		java.io.File oFile = new java.io.File(proj.getLocation() + java.io.File.separator + patchFile.getFullPath().toString());
+		java.io.File nFile = new java.io.File(proj.getLocation() + java.io.File.separator + patchFile.getFullPath().toString().replace("patched", "patch"));
 		oFile.renameTo(nFile);
 		try {
 			proj.refreshLocal(IProject.DEPTH_ONE, null);
