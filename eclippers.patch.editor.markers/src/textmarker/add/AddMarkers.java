@@ -175,15 +175,19 @@ public class AddMarkers {
 			int lineNumber = 0;
 			String line = "";
 			int charPos = 0;
-
+			int carrLength = 1;
+			
 			try {
 				while ((line = read.readLine()) != null) {
+					//The three are "\r", "\n" and "\r\n"
+					if(lineNumber == 0 && line.endsWith("\r\n")){
+						carrLength = 2;
+					}
 					if (lineNum == lineNumber) {
 						break;
 					}
 
-					//TODO JB: This used to be 2, possible to measure carriage return?
-					charPos += line.length() + 1; // 2 for carriage return
+					charPos += line.length() + carrLength;
 					lineNumber++;
 				}
 
@@ -204,14 +208,18 @@ public class AddMarkers {
 		int lineNumber = 0;
 		String line = "";
 		int charPos = 0;
+		int carrLength = 1;
 
 		try {
 			while ((line = read.readLine()) != null) {
+				if(lineNumber == 0 && line.endsWith("\r\n")){
+					carrLength = 2;
+				}
 				if (lineNum == lineNumber) {
 					break;
 				}
 
-				charPos += line.length() + 1; // 2 for carriage return
+				charPos += line.length() + carrLength; 
 				lineNumber++;
 			}
 
