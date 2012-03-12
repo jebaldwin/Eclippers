@@ -47,7 +47,7 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 			TextEditor part = (TextEditor)editor;
 			part.doRevertToSaved();
 		} 
-		ParseXMLForMarkers.parseXML(proj, editor, null, null);
+		ParseXMLForMarkers.parseXML(proj, editor, "", null);
 	}
 
 	/**
