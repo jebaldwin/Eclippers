@@ -110,8 +110,11 @@ public class ParseXMLForMarkers {
 										int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
 										String codeLine = offsetElement.getAttribute("content");
 										int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
+										int offset = newLine - originalLine;
+										if(offset != 0)
+											offset = offset - 1;
 										
-										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, true, patchLine);
+										AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber - offset, proj, codeLine, true, true, patchLine);
 										RemovedLine rl = new RemovedLine(lineNumber, newLine, originalLine, codeLine, patchLine, checkFile);
 										
 										if(filter != null && patchName.equals(filter)){
