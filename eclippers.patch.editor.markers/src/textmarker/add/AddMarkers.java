@@ -28,6 +28,7 @@ public class AddMarkers {
 	public static void addMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean applied, boolean lineAdded, int patchLine) {
 
 		// allow for default context numbers
+		//TODO JB: fix for newly created files, or all deleted files
 		if (!applied)
 			lineNum = lineNum + 3;
 	
@@ -71,6 +72,7 @@ public class AddMarkers {
 						marker.setAttribute("description", code);
 						marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line added.");
 						int lineStart = getCharStart(lineNum - 1, javaFile);
+						marker.setAttribute(IMarker.LINE_NUMBER, lineNum -1);
 						marker.setAttribute(IMarker.CHAR_START, lineStart);
 						marker.setAttribute(IMarker.CHAR_END, lineStart + code.length());
 					} else {
@@ -180,7 +182,8 @@ public class AddMarkers {
 						break;
 					}
 
-					charPos += line.length() + 2; // 2 for carriage return
+					//TODO JB: This used to be 2, possible to measure carriage return?
+					charPos += line.length() + 1; // 2 for carriage return
 					lineNumber++;
 				}
 
@@ -208,7 +211,7 @@ public class AddMarkers {
 					break;
 				}
 
-				charPos += line.length() + 2; // 2 for carriage return
+				charPos += line.length() + 1; // 2 for carriage return
 				lineNumber++;
 			}
 
