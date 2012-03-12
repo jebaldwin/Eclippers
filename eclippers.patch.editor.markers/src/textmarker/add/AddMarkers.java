@@ -28,7 +28,7 @@ public class AddMarkers {
 	public static void addMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean applied, boolean lineAdded, int patchLine) {
 
 		// allow for default context numbers
-		//TODO JB: fix for newly created files, or all deleted files
+		//TODO JB: fix for deleted files
 		if (!applied)
 			lineNum = lineNum + 3;
 	
@@ -98,10 +98,16 @@ public class AddMarkers {
 	public static void addRemovedMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean lineAdded, int patchLine, String fileContents) {
 		// TODO this works the first time the file is opened, but a refresh
 		// after that does strange higlighting things
-		int index = fileName.indexOf(proj.getName());
-		IPath path = new Path(fileName.substring(index));
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+		//int index = fileName.indexOf(proj.getName());
+		//IPath path = new Path(fileName.substring(index));
+		//IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
+		IPath path = new Path(fileName);
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+		if(file.getName().startsWith(".")){
+			//hidden file
+			return;
+		}
 		try {
 			IMarker[] markers = file.findMarkers("patchLinesMarker", false, 0);
 			IMarker marker = null;
@@ -148,10 +154,16 @@ public class AddMarkers {
 
 	public static void clearMarkers(String fileName, String ownerName, IProject proj) {
 
-		int index = fileName.indexOf(proj.getName());
-		IPath path = new Path(fileName.substring(index));
-		IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+		//int index = fileName.indexOf(proj.getName());
+		//IPath path = new Path(fileName.substring(index));
+		//IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
+		IPath path = new Path(fileName);
+		IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+		if(iFile.getName().startsWith(".")){
+			//hidden file
+			return;
+		}
 		try {
 			iFile.deleteMarkers("patchAppliesMarker", true, IResource.DEPTH_ZERO);
 		} catch (CoreException e) {
@@ -170,6 +182,7 @@ public class AddMarkers {
 	}
 
 	public static int getCharStart(int lineNum, File javaFile) {
+		//TODO JB: use last position so search time is quicker
 		try {
 			BufferedReader read = new BufferedReader(new FileReader(javaFile));
 			int lineNumber = 0;
