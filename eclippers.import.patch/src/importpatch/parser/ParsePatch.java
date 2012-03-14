@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -82,6 +84,7 @@ public class ParsePatch {
 			Element patchEl = doc.createElement("patch");
 			patchEl.setAttribute("name", patchName);
 			patchEl.setAttribute("applied", Boolean.toString(applied));
+			patchEl.setAttribute("date", new Date().toLocaleString());
 			root.appendChild(patchEl);
 			Element diffStart = null;
 			Element off = null;

@@ -67,10 +67,14 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 				//ParseXMLForMarkers.parseXML(resource.getProject());
 			}
 		} else if (selection instanceof TextSelection) {
-			IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
-			IProject proj = ((FileEditorInput)ei).getFile().getProject();
-			//TODO refresh?
-			//ParseXMLForMarkers.parseXML(proj);
+			try{
+				IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
+				IProject proj = ((FileEditorInput)ei).getFile().getProject();
+				//TODO refresh?
+				//ParseXMLForMarkers.parseXML(proj);
+			} catch (NullPointerException npe){
+				System.out.println("No editor open.");
+			}
 		}
 	}
 	

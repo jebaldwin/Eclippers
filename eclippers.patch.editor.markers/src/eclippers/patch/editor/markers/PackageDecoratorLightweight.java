@@ -1,15 +1,8 @@
 package eclippers.patch.editor.markers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.core.internal.resources.File;
-import org.eclipse.core.internal.resources.Folder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.internal.core.CompilationUnit;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -49,6 +42,8 @@ public class PackageDecoratorLightweight extends LabelProvider implements ILight
 		//highlight parent containers of the affected file
 		for(int i = 0; i < ParseXMLForMarkers.affected.size(); i++){
 			IPath path = ParseXMLForMarkers.affected.get(i);
+			
+			//TODO JB: make this better
 			if(path.toString().contains(res.toString())){
 				decoration.setBackgroundColor(color);
 				break;

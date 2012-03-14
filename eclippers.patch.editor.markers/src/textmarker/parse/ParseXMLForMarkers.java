@@ -91,109 +91,113 @@ public class ParseXMLForMarkers {
 						patchName = patchElement.getAttribute("name");
 						String applied = patchElement.getAttribute("applied");
 						
-						NodeList n2 = patchElement.getElementsByTagName("file");
-						if(n2 != null && n2.getLength() > 0) {
-							for (int j = 0; j < n2.getLength(); j++) {
-								Element fileElement = (Element)n2.item(j);
-								String fileName = fileElement.getAttribute("name");// + ".java";
-								String filePath = fileElement.getAttribute("package");
-								filePath = filePath.replaceAll("\\.", "/");
-								String fullPath = proj.getLocation() + File.separator + filePath + File.separator + fileName;
-								String projPath = filePath + File.separator + fileName;
-								
-								File checkFile = new File(fullPath);
-								if(!checkFile.exists()){
-									//try without src directory
-									fullPath = fullPath.replaceFirst("src", ".");
-									checkFile = new File(fullPath);
+						//TODO JB:filter patches
+						if(filter != null && patchName.equals(filter)){
+						
+							NodeList n2 = patchElement.getElementsByTagName("file");
+							if(n2 != null && n2.getLength() > 0) {
+								for (int j = 0; j < n2.getLength(); j++) {
+									Element fileElement = (Element)n2.item(j);
+									String fileName = fileElement.getAttribute("name");// + ".java";
+									String filePath = fileElement.getAttribute("package");
+									filePath = filePath.replaceAll("\\.", "/");
+									String fullPath = proj.getLocation() + File.separator + filePath + File.separator + fileName;
+									String projPath = filePath + File.separator + fileName;
 									
+									File checkFile = new File(fullPath);
 									if(!checkFile.exists()){
-										//try under src directory
-										fullPath = proj.getLocation() + File.separator + "src" + File.separator + filePath + File.separator + fileName;
+										//try without src directory
+										fullPath = fullPath.replaceFirst("src", ".");
 										checkFile = new File(fullPath);
-									}
-								}
-	
-								AddMarkers.clearMarkers(fullPath, patchName, proj);
-								IResource file = proj.findMember(projPath);
-	
-								if(!affected.contains(file) && file != null){
-									affected.add(file.getFullPath());
-								}
-								if(filter != null && patchName.equals(filter)){
-									if(!tempAffected.contains(file) && file != null){
-										tempAffected.add(file.getFullPath());
-									}
-								}
 										
-								if(applied.equals("true")){
-									NodeList n3 = fileElement.getElementsByTagName("addline");
-									if(n3 != null && n3.getLength() > 0) {
-										for(int k = 0; k < n3.getLength(); k++) {
-											Element offsetElement = (Element)n3.item(k);
-											int lineNumber = Integer.parseInt(offsetElement.getAttribute("at"));
-											int newLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("startApplied"));
-											int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
-											String codeLine = offsetElement.getAttribute("content");
-											int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
-											int offset = newLine - originalLine;
-											if(offset != 0)
-												offset = offset - 1;
+										if(!checkFile.exists()){
+											//try under src directory
+											fullPath = proj.getLocation() + File.separator + "src" + File.separator + filePath + File.separator + fileName;
+											checkFile = new File(fullPath);
+										}
+									}
+		
+									AddMarkers.clearMarkers(fullPath, patchName, proj);
+									IResource file = proj.findMember(projPath);
+		
+									if(!affected.contains(file) && file != null){
+										affected.add(file.getFullPath());
+									}
+									if(filter != null && patchName.equals(filter)){
+										if(!tempAffected.contains(file) && file != null){
+											tempAffected.add(file.getFullPath());
+										}
+									}
 											
-											AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber - offset, proj, codeLine, true, true, patchLine);
-											RemovedLine rl = new RemovedLine(lineNumber, newLine, originalLine, codeLine, patchLine, checkFile);
-											
-											if(filter != null && patchName.equals(filter)){
-												if(!tempAffected.contains(file) && file != null){
-													tempAffectedLines.add(rl);
+									if(applied.equals("true")){
+										NodeList n3 = fileElement.getElementsByTagName("addline");
+										if(n3 != null && n3.getLength() > 0) {
+											for(int k = 0; k < n3.getLength(); k++) {
+												Element offsetElement = (Element)n3.item(k);
+												int lineNumber = Integer.parseInt(offsetElement.getAttribute("at"));
+												int newLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("startApplied"));
+												int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
+												String codeLine = offsetElement.getAttribute("content");
+												int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
+												int offset = newLine - originalLine;
+												if(offset != 0)
+													offset = offset - 1;
+												
+												AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber - offset, proj, codeLine, true, true, patchLine);
+												RemovedLine rl = new RemovedLine(lineNumber, newLine, originalLine, codeLine, patchLine, checkFile);
+												
+												if(filter != null && patchName.equals(filter)){
+													if(!tempAffected.contains(file) && file != null){
+														tempAffectedLines.add(rl);
+													}
 												}
 											}
 										}
-									}
-	
-									n3 = fileElement.getElementsByTagName("remline");
-									if(n3 != null && n3.getLength() > 0) {
-										for(int k = 0; k < n3.getLength(); k++) {
-											Element offsetElement = (Element)n3.item(k);
-											int lineNumber = Integer.parseInt(offsetElement.getAttribute("at"));
-											int newLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("startApplied"));
-											int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
-											String codeLine = offsetElement.getAttribute("content");
-											int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
-											int tempLineNum = lineNumber + (newLine - originalLine);
-											
-											//AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false, patchLine);
-											RemovedLine rl = new RemovedLine(tempLineNum, newLine, originalLine, codeLine, patchLine, checkFile);
-											remLines.add(rl);
-											
-											if(filter != null && patchName.equals(filter)){
-												if(!tempAffected.contains(file) && file != null){
-													tempRemovedLines.add(rl);
+		
+										n3 = fileElement.getElementsByTagName("remline");
+										if(n3 != null && n3.getLength() > 0) {
+											for(int k = 0; k < n3.getLength(); k++) {
+												Element offsetElement = (Element)n3.item(k);
+												int lineNumber = Integer.parseInt(offsetElement.getAttribute("at"));
+												int newLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("startApplied"));
+												int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
+												String codeLine = offsetElement.getAttribute("content");
+												int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
+												int tempLineNum = lineNumber + (newLine - originalLine);
+												
+												//AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false, patchLine);
+												RemovedLine rl = new RemovedLine(tempLineNum, newLine, originalLine, codeLine, patchLine, checkFile);
+												remLines.add(rl);
+												
+												if(filter != null && patchName.equals(filter)){
+													if(!tempAffected.contains(file) && file != null){
+														tempRemovedLines.add(rl);
+													}
 												}
 											}
 										}
-									}
-								} else {					
-									NodeList n3 = fileElement.getElementsByTagName("offset");
-									if(n3 != null && n3.getLength() > 0) {
-										for(int k = 0; k < n3.getLength(); k++) {
-											Element offsetElement = (Element)n3.item(k);
-											int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
-											int lineNumber = Integer.parseInt(offsetElement.getAttribute("start"));
-											//enumerate lines of code
-											String lines = "Lines that will be removed:\n";
-											NodeList n4 = offsetElement.getElementsByTagName("remline");									
-											for(int j1 = 0; j1 < n4.getLength(); j1++) {
-												Element r = (Element)n4.item(j1);
-												lines += r.getAttribute("content").replaceAll("\t", "") + "\n";
+									} else {					
+										NodeList n3 = fileElement.getElementsByTagName("offset");
+										if(n3 != null && n3.getLength() > 0) {
+											for(int k = 0; k < n3.getLength(); k++) {
+												Element offsetElement = (Element)n3.item(k);
+												int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
+												int lineNumber = Integer.parseInt(offsetElement.getAttribute("start"));
+												//enumerate lines of code
+												String lines = "Lines that will be removed:\n";
+												NodeList n4 = offsetElement.getElementsByTagName("remline");									
+												for(int j1 = 0; j1 < n4.getLength(); j1++) {
+													Element r = (Element)n4.item(j1);
+													lines += r.getAttribute("content").replaceAll("\t", "") + "\n";
+												}
+												lines += "\nLines that will be added:\n";
+												n4 = offsetElement.getElementsByTagName("addline");									
+												for(int j1 = 0; j1 < n4.getLength(); j1++) {
+													Element r = (Element)n4.item(j1);
+													lines += r.getAttribute("content").replaceAll("\t", "") + "\n";
+												}
+												AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, lines, false, true, patchLine);
 											}
-											lines += "\nLines that will be added:\n";
-											n4 = offsetElement.getElementsByTagName("addline");									
-											for(int j1 = 0; j1 < n4.getLength(); j1++) {
-												Element r = (Element)n4.item(j1);
-												lines += r.getAttribute("content").replaceAll("\t", "") + "\n";
-											}
-											AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, lines, false, true, patchLine);
 										}
 									}
 								}
