@@ -1,6 +1,9 @@
 package eclippers.patch.editor.markers;
 
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IDecoration;
@@ -43,12 +46,22 @@ public class PackageDecoratorLightweight extends LabelProvider implements ILight
 		for(int i = 0; i < ParseXMLForMarkers.affected.size(); i++){
 			IPath path = ParseXMLForMarkers.affected.get(i);
 			
-			//TODO JB: make this better
-			if(path.toString().contains(res.toString())){
-				decoration.setBackgroundColor(color);
-				break;
+			//check just package name
+			if(resfile instanceof Project){
+				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+				if(((Project)resfile).getName().equals(file.getProject().getName())){
+					decoration.setBackgroundColor(color);
+					break;
+				} else {
+					decoration.setBackgroundColor(white);
+				}
 			} else {
-				decoration.setBackgroundColor(white);
+				if(path.toString().contains(res.toString())){
+					decoration.setBackgroundColor(color);
+					break;
+				} else {
+					decoration.setBackgroundColor(white);
+				}
 			}
 		}
 	}

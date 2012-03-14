@@ -148,7 +148,9 @@ public class HistoryView extends ViewPart {
 	}
 
 	public static void populate(IProject proj) {
-
+		if(proj == null)
+			return;
+		
 		File xmlFile = new File(proj.getLocation() + File.separator + patchPrefix + File.separator + "patch.cfg");
 		table.removeAll();
 		
@@ -249,7 +251,7 @@ public class HistoryView extends ViewPart {
 				// ParseXMLForMarkers.parseXML(proj, null, ".lecode.git",
 				// brickName);
 
-				showMessage(project + " " + patchName);
+				//showMessage(project + " " + patchName);
 				IProject proj = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
 				ParseXMLForMarkers.parseXML(proj, null, ".lecode.git", patchName);
 				

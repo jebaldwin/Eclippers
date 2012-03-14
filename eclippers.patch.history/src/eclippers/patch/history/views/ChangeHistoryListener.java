@@ -33,8 +33,12 @@ public class ChangeHistoryListener implements ISelectionListener {
 				ICompilationUnit cu = (ICompilationUnit) selected;
 				proj = cu.getJavaProject().getProject();
 			} else {
-				IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
-				proj = file.getProject();
+				try{
+					IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
+					proj = file.getProject();
+				} catch (NullPointerException npe){
+					//no editor was open
+				}
 			}
 		} else if (selection instanceof TextSelection) {
 			IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
