@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: eclippers.patch.history.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- eclippers.patch.editor.markers;bundle-version="1.0.0"
+ eclippers.patch.editor.markers;bundle-version="1.0.0",
+ org.eclipse.core.resources;bundle-version="3.7.100"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.core.resources,
