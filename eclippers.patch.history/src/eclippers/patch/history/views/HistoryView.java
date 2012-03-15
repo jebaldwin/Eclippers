@@ -7,9 +7,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.internal.resources.Folder;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.Action;
@@ -55,7 +58,7 @@ public class HistoryView extends ViewPart {
 	private TableViewer viewer;
 	private Action action1;
 	public static Table table;
-	public static String patchPrefix = ".lecode.git";
+	//public static String patchPrefix = "";
 
 	// Set column names
 	private String[] columnNames = new String[] { "Project", "Patch Name", "Date Applied" };
@@ -64,7 +67,6 @@ public class HistoryView extends ViewPart {
 	 * The constructor.
 	 */
 	public HistoryView() {
-
 	}
 
 	/**
@@ -151,42 +153,48 @@ public class HistoryView extends ViewPart {
 		if(proj == null)
 			return;
 		
-		File xmlFile = new File(proj.getLocation() + File.separator + patchPrefix + File.separator + "patch.cfg");
+		//File xmlFile = new File(proj.getLocation() + File.separator + patchPrefix + File.separator + "patch.cfg");
+		//IFile xmlFile = proj.getFile("patch.cfg");
+		File file = findFileInProject(proj, "patch.cfg");
 		table.removeAll();
 		
-		if (xmlFile.exists()) {
-
-			try {
-
-				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder builder;
-				builder = factory.newDocumentBuilder();
-				Document document = builder.parse(xmlFile);
-				String patchName = "";
-
-				// get the root element
-				Element rootElement = document.getDocumentElement();
-
-				// get each patch element
-				NodeList nl = rootElement.getElementsByTagName("patch");
-				if (nl != null && nl.getLength() > 0) {
-					for (int i = 0; i < nl.getLength(); i++) {
-						Element patchElement = (Element) nl.item(i);
-						patchName = patchElement.getAttribute("name");
-						String applied = patchElement.getAttribute("applied");
-						String date = patchElement.getAttribute("date");
-
-						TableItem item = new TableItem(table, 0);
-						item.setText(new String[] { proj.getName(), patchName, date });
+		if(file != null){
+			File xmlFile = new File(proj.getLocation() + file.getPath().substring(proj.getName().length() + 1));
+			
+			if (xmlFile != null && xmlFile.exists()) {
+	
+				try {
+	
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+					DocumentBuilder builder;
+					builder = factory.newDocumentBuilder();
+					Document document = builder.parse(xmlFile);
+					String patchName = "";
+	
+					// get the root element
+					Element rootElement = document.getDocumentElement();
+	
+					// get each patch element
+					NodeList nl = rootElement.getElementsByTagName("patch");
+					if (nl != null && nl.getLength() > 0) {
+						for (int i = 0; i < nl.getLength(); i++) {
+							Element patchElement = (Element) nl.item(i);
+							patchName = patchElement.getAttribute("name");
+							String applied = patchElement.getAttribute("applied");
+							String date = patchElement.getAttribute("date");
+	
+							TableItem item = new TableItem(table, 0);
+							item.setText(new String[] { proj.getName(), patchName, date });
+						}
 					}
+	
+				} catch (ParserConfigurationException e) {
+					e.printStackTrace();
+				} catch (SAXException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-
-			} catch (ParserConfigurationException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
 		}
 	}
@@ -270,5 +278,33 @@ public class HistoryView extends ViewPart {
 	 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
+	}
+	
+	private static File findFileInProject(IProject proj, String fileName){
+		//search two levels down for the patch.cfg file
+		try{
+			IResource[] resources = proj.members();
+			for (int i = 0; i < resources.length; i++) {
+				IResource res = resources[i];
+				if(res instanceof org.eclipse.core.internal.resources.File){
+					if(res.getName().equals(fileName)){
+						return ((org.eclipse.core.internal.resources.File)res).getFullPath().toFile();
+					}
+				} else if(res instanceof Folder){
+					IResource[] ress = ((Folder)res).members();
+					for (int j = 0; j < ress.length; j++) {
+						IResource subres = ress[j];
+						if(subres instanceof org.eclipse.core.internal.resources.File){
+							if(subres.getName().equals(fileName)){
+								return ((org.eclipse.core.internal.resources.File)subres).getFullPath().toFile();
+							}
+						}
+					}
+				}				
+			}
+		} catch(CoreException ce) {
+			
+		}
+		return null;
 	}
 }
