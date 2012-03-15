@@ -1,5 +1,6 @@
 package textmarker.actions;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
@@ -9,12 +10,15 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 
+import textmarker.add.AddMarkers;
 import textmarker.parse.ParseXMLForMarkers;
 
 public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
@@ -33,7 +37,27 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
+		//get all open editors
+		IEditorReference[] refs = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+		for (int i = 0; i < refs.length; i++) {
+			IEditorReference ref = refs[i];
+			try {
+				IEditorInput ei = ref.getEditorInput();
+				IProject proj = ((FileEditorInput)ei).getFile().getProject();
+				IFile file = ((FileEditorInput)ei).getFile();
+				IEditorPart editor = ref.getEditor(false);
+				
+				//TODO JB: Need to revert to saved?
+				
+				AddMarkers.clearMarkers(file, "", proj);			
+				ParseXMLForMarkers.parseXML(proj, editor, "", null);
+			} catch (PartInitException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		/*IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
 		IProject proj = ((FileEditorInput)ei).getFile().getProject();
 		
 		//putting in lines, adding markers and forcing close with no save might work best 
@@ -47,7 +71,7 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 			TextEditor part = (TextEditor)editor;
 			part.doRevertToSaved();
 		} 
-		ParseXMLForMarkers.parseXML(proj, editor, "", null);
+		ParseXMLForMarkers.parseXML(proj, editor, "", null);*/
 	}
 
 	/**

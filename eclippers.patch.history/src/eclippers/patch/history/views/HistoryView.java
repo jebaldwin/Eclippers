@@ -261,10 +261,9 @@ public class HistoryView extends ViewPart {
 
 				//showMessage(project + " " + patchName);
 				IProject proj = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
+				ParseXMLForMarkers.clearLists();
+				ParseXMLForMarkers.clearAll();
 				ParseXMLForMarkers.parseXML(proj, null, ".lecode.git", patchName);
-				
-				//TODO JB: auto expand project one level
-				
 			}
 		});
 	}

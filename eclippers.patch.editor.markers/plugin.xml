@@ -12,10 +12,24 @@
                class="textmarker.actions.AddMarkerAction"
                icon="icons/reset.gif"
                id="textmarker.actions.AddMarkerAction"
-               label="Refresh Patch Markers"
+               label="Show All Patch Markers"
                menubarPath="sampleMenu/sampleGroup"
                toolbarPath="sampleGroup"
-               tooltip="Refresh Patch Markers"/>
+               tooltip="Show All Patch Markers"/>
+      </actionSet>
+      <actionSet
+            id="PatchedGutterAnnotations.actionSetRemove"
+            label="Remove Patch Markers"
+            visible="true">
+         <action
+               class="textmarker.actions.RemoveMarkersAction"
+               icon="icons/delete_obj.gif"
+               id="textmarker.actions.RemoveMarkersAction"
+               label="Remove All Patch Markers"
+               menubarPath="sampleMenu/sampleGroup"
+               toolbarPath="sampleGroup"
+               tooltip="Remove All Patch Markers">
+         </action>
       </actionSet>
    </extension>
 

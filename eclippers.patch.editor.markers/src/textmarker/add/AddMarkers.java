@@ -152,14 +152,14 @@ public class AddMarkers {
 		}
 	}
 
-	public static void clearMarkers(String fileName, String ownerName, IProject proj) {
+	public static void clearMarkers(IFile iFile, String ownerName, IProject proj) {
 
 		//int index = fileName.indexOf(proj.getName());
 		//IPath path = new Path(fileName.substring(index));
 		//IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
-		IPath path = new Path(fileName);
-		IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+		//IPath path = new Path(fileName);
+		//IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
 		if(iFile.getName().startsWith(".")){
 			//hidden file
 			return;
