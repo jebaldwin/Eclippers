@@ -54,10 +54,10 @@ public class ParseXMLForMarkers {
 		tempRemovedLines = new ArrayList<RemovedLine>();
 		
 		//File xmlFile = new File(proj.getLocation() + File.separator + pathPrefix + File.separator + "patch.cfg");
-		File tempfile = findFileInProject(proj, "patch.cfg");
+		File xmlFile = findFileInProject(proj, "patch.cfg");
 		
-		if(tempfile != null){
-			File xmlFile = new File(proj.getLocation() + tempfile.getPath().substring(proj.getName().length() + 1));
+		//if(tempfile != null){
+			//File xmlFile = new File(proj.getLocation() + tempfile.getPath().substring(proj.getName().length() + 1));
 			
 			ArrayList<RemovedLine> remLines = new ArrayList<RemovedLine>();
 			
@@ -253,14 +253,34 @@ public class ParseXMLForMarkers {
 					e.printStackTrace();
 				}
 			}
-		}
+		//}
 	}
 	
 	private static File findFileInProject(IProject proj, String fileName){
 		//search two levels down for the patch.cfg file
-		try{
-			IResource[] resources = proj.members();
-			for (int i = 0; i < resources.length; i++) {
+		//try{
+			//IResource[] resources = proj.members(IProject.INCLUDE_HIDDEN);
+			
+			File projFolder = proj.getLocation().toFile();
+			File[] files = projFolder.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				File file = files[i];
+				if(file.isDirectory()){
+					File [] moreFiles = file.listFiles();
+					for (int j = 0; j < moreFiles.length; j++) {
+						File subFile = moreFiles[j];
+						if(subFile.getName().equals(fileName)){
+							return subFile;
+						}
+					}
+				} else {
+					if(file.getName().equals(fileName)){
+						return file;
+					}
+				}
+			}
+			
+			/*for (int i = 0; i < resources.length; i++) {
 				IResource res = resources[i];
 				if(res instanceof org.eclipse.core.internal.resources.File){
 					if(res.getName().equals(fileName)){
@@ -277,10 +297,10 @@ public class ParseXMLForMarkers {
 						}
 					}
 				}				
-			}
-		} catch(CoreException ce) {
-			
-		}
+			}*/
+		//} catch(CoreException ce) {
+		//	ce.printStackTrace();
+		//}
 		return null;
 	}
 

@@ -155,11 +155,11 @@ public class HistoryView extends ViewPart {
 		
 		//File xmlFile = new File(proj.getLocation() + File.separator + patchPrefix + File.separator + "patch.cfg");
 		//IFile xmlFile = proj.getFile("patch.cfg");
-		File file = findFileInProject(proj, "patch.cfg");
+		File xmlFile = findFileInProject(proj, "patch.cfg");
 		table.removeAll();
 		
-		if(file != null){
-			File xmlFile = new File(proj.getLocation() + file.getPath().substring(proj.getName().length() + 1));
+		//if(file != null){
+			//File xmlFile = new File(proj.getLocation() + file.getPath().substring(proj.getName().length() + 1));
 			
 			if (xmlFile != null && xmlFile.exists()) {
 	
@@ -196,7 +196,7 @@ public class HistoryView extends ViewPart {
 					e.printStackTrace();
 				}
 			}
-		}
+		//}
 	}
 
 	private IProject getSelectedProject() {
@@ -281,8 +281,27 @@ public class HistoryView extends ViewPart {
 	
 	private static File findFileInProject(IProject proj, String fileName){
 		//search two levels down for the patch.cfg file
-		try{
-			IResource[] resources = proj.members();
+		
+		File projFolder = proj.getLocation().toFile();
+		File[] files = projFolder.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+			if(file.isDirectory()){
+				File [] moreFiles = file.listFiles();
+				for (int j = 0; j < moreFiles.length; j++) {
+					File subFile = moreFiles[j];
+					if(subFile.getName().equals(fileName)){
+						return subFile;
+					}
+				}
+			} else {
+				if(file.getName().equals(fileName)){
+					return file;
+				}
+			}
+		}
+		/*try{
+			IResource[] resources = proj.members(IProject.INCLUDE_HIDDEN);
 			for (int i = 0; i < resources.length; i++) {
 				IResource res = resources[i];
 				if(res instanceof org.eclipse.core.internal.resources.File){
@@ -303,7 +322,7 @@ public class HistoryView extends ViewPart {
 			}
 		} catch(CoreException ce) {
 			
-		}
+		}*/
 		return null;
 	}
 }
