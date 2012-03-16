@@ -183,7 +183,7 @@ public class HistoryView extends ViewPart {
 							String applied = patchElement.getAttribute("applied");
 							String date = patchElement.getAttribute("date");
 	
-							TableItem item = new TableItem(table, 0);
+							TableItem item = new TableItem(table, 0, 0);
 							item.setText(new String[] { proj.getName(), patchName, date });
 						}
 					}
