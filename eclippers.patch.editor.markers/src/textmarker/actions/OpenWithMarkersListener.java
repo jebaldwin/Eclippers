@@ -16,26 +16,18 @@ public class OpenWithMarkersListener implements IPartListener {
 
 	@Override
 	public void partActivated(IWorkbenchPart part) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void partBroughtToTop(IWorkbenchPart part) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void partClosed(IWorkbenchPart part) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void partDeactivated(IWorkbenchPart part) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -44,21 +36,10 @@ public class OpenWithMarkersListener implements IPartListener {
 			IEditorInput editorInput = ((IEditorPart) part).getEditorInput();
 			if (editorInput instanceof IFileEditorInput) {
 				IFile file = ((IFileEditorInput) editorInput).getFile();
-				if (file.getName().endsWith(".xml")) { 
-					System.out.println("Xml file openend ");
-				} else if (file.getName().endsWith(".java")) {
-					System.out.println("Java file opened");
-					// check if there is highlighting in this project
-					//ISelection sel = event.getSelection();
-					
-					// get project
-					IProject proj = file.getProject();
-					
-					// check if highlighting is going on
-					if(proj == PackageDecoratorLightweight.currProj){
-						// refresh markers
-						ParseXMLForMarkers.parseXML(proj, (IEditorPart) part, "", ParseXMLForMarkers.currFilter);
-					}
+				// check if there is highlighting in this project
+				IProject proj = file.getProject();
+				if(proj == PackageDecoratorLightweight.currProj){
+					ParseXMLForMarkers.parseXML(proj, (IEditorPart) part, "", ParseXMLForMarkers.currFilter);
 				}
 			}
 		}

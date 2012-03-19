@@ -46,11 +46,19 @@ public class ParseXMLForMarkers {
 	public static ArrayList<RemovedLine> tempRemovedLines = new ArrayList<RemovedLine>();
 	
 	public static String currFilter = "";
+	public static boolean setListener = false;
 	
 	public static ArrayList<IPath> affected = new ArrayList<IPath>();
 	public static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 	
 	public static void parseXML(IProject proj, IEditorPart part, String pathPrefix, String filter) {
+		if(!setListener){
+			setListener = true;
+			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+			//window.getSelectionService().addSelectionListener(new MySelectionListener());
+			window.getActivePage().addPartListener(new OpenWithMarkersListener());
+		}
+		
 		currFilter = filter;
 		affected = new ArrayList<IPath>();
 		tempAffected = new ArrayList<IPath>();
@@ -161,7 +169,8 @@ public class ParseXMLForMarkers {
 													if(offset != 0)
 														offset = offset - 1;
 													
-													AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber - offset, proj, codeLine, true, true, patchLine);
+													//AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber - offset, proj, codeLine, true, true, patchLine);
+													AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, codeLine, true, true, patchLine);
 													RemovedLine rl = new RemovedLine(lineNumber, newLine, originalLine, codeLine, patchLine, checkFile);
 													
 													if(filter != null && patchName.equals(filter)){
@@ -183,7 +192,7 @@ public class ParseXMLForMarkers {
 													int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
 													int tempLineNum = lineNumber + (newLine - originalLine);
 													
-													//AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false, patchLine);
+													AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false, patchLine);
 													RemovedLine rl = new RemovedLine(tempLineNum, newLine, originalLine, codeLine, patchLine, checkFile);
 													remLines.add(rl);
 													

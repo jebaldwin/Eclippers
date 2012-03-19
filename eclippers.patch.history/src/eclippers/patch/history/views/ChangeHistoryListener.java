@@ -40,10 +40,10 @@ public class ChangeHistoryListener implements ISelectionListener {
 					//no editor was open
 				}
 			}
-		} else if (selection instanceof TextSelection) {
+		} /*else if (selection instanceof TextSelection) {
 			IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
 			proj = file.getProject();
-		}
+		}*/
 
 		if (proj != lastProj && proj != null) {
 
