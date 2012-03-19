@@ -36,6 +36,7 @@ import org.xml.sax.SAXException;
 import textmarker.actions.OpenWithMarkersListener;
 import textmarker.add.AddMarkers;
 import eclippers.patch.editor.extension.PatchContainingEditor;
+import eclippers.patch.editor.markers.NewFileDecoratorLightweight;
 import eclippers.patch.editor.markers.PackageDecoratorLightweight;
 
 public class ParseXMLForMarkers {
@@ -44,6 +45,7 @@ public class ParseXMLForMarkers {
 	public static ArrayList<IPath> tempAffected = new ArrayList<IPath>();
 	public static ArrayList<RemovedLine> tempAffectedLines = new ArrayList<RemovedLine>();
 	public static ArrayList<RemovedLine> tempRemovedLines = new ArrayList<RemovedLine>();
+	public static ArrayList<IPath> newlyAddedFiles = new ArrayList<IPath>();
 	
 	public static String currFilter = "";
 	public static boolean setListener = false;
@@ -64,17 +66,16 @@ public class ParseXMLForMarkers {
 		tempAffected = new ArrayList<IPath>();
 		tempAffectedLines = new ArrayList<RemovedLine>();
 		tempRemovedLines = new ArrayList<RemovedLine>();
+		newlyAddedFiles = new ArrayList<IPath>();
 		
 		//File xmlFile = new File(proj.getLocation() + File.separator + pathPrefix + File.separator + "patch.cfg");
 		File xmlFile = findFileInProject(proj, "patch.cfg");
 		
 		//if(tempfile != null){
-			//File xmlFile = new File(proj.getLocation() + tempfile.getPath().substring(proj.getName().length() + 1));
-			
+			//File xmlFile = new File(proj.getLocation() + tempfile.getPath().substring(proj.getName().length() + 1));			
 			ArrayList<RemovedLine> remLines = new ArrayList<RemovedLine>();
 			
-			if(xmlFile != null && !xmlFile.exists()){
-				
+			if(xmlFile != null && !xmlFile.exists()){				
 				//create XML File
 				try {
 					//need to create parent folder?
@@ -93,8 +94,6 @@ public class ParseXMLForMarkers {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-				
 			} else {
 			
 				try {
@@ -125,6 +124,7 @@ public class ParseXMLForMarkers {
 										Element fileElement = (Element)n2.item(j);
 										String fileName = fileElement.getAttribute("name");// + ".java";
 										String filePath = fileElement.getAttribute("package");
+										boolean added = new Boolean(fileElement.getAttribute("added")).booleanValue();
 										filePath = filePath.replaceAll("\\.", "/");
 										String fullPath = proj.getLocation() + File.separator + filePath + File.separator + fileName;
 										String projPath = filePath + File.separator + fileName;
@@ -146,9 +146,15 @@ public class ParseXMLForMarkers {
 										//AddMarkers.clearMarkers(fullPath, patchName, proj);
 										IResource file = proj.findMember(projPath);
 			
+										//TODO JB: is this a newly added file?
+										if(!newlyAddedFiles.contains(file) && added){
+											newlyAddedFiles.add(file.getFullPath());
+										}
+										
 										if(!affected.contains(file) && file != null){
 											affected.add(file.getFullPath());
 										}
+										
 										if(filter == null || (filter != null && patchName.equals(filter))){
 											if(!tempAffected.contains(file) && file != null){
 												tempAffected.add(file.getFullPath());
@@ -257,6 +263,7 @@ public class ParseXMLForMarkers {
 					
 					//TODO reveal affected files in package explorer
 					PackageDecoratorLightweight.getDecorator().refresh();
+					NewFileDecoratorLightweight.getDecorator().refresh();
 				} catch (ParserConfigurationException e) {
 					e.printStackTrace();
 				} catch (SAXException e) {
@@ -322,6 +329,7 @@ public class ParseXMLForMarkers {
 		tempRemovedLines = new ArrayList<RemovedLine>();
 		affected = new ArrayList<IPath>();
 		PackageDecoratorLightweight.getDecorator().refresh();
+		NewFileDecoratorLightweight.getDecorator().refresh();
 	}
 	
 	public static void clearAll(){

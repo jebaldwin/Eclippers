@@ -97,7 +97,6 @@ public class ParsePatch {
             		//contains filename
 					String[] array = line.split("\\s");
 					fileName = array[1];
-					diffStart = doc.createElement("file");
 					
 					//changes for git patches with /a and /b
 					if(fileName.startsWith("a/") || fileName.startsWith("b/")){
@@ -116,6 +115,15 @@ public class ParsePatch {
 					diffStart.setAttribute("name", fileName);
 					diffStart.setAttribute("length", Integer.toString(length));
 					patchEl.appendChild(diffStart);
+				} else if(line.startsWith("---")){
+					diffStart = doc.createElement("file");
+					
+					if(line.contains("/dev/null"))
+						diffStart.setAttribute("added", "true");
+					else
+						diffStart.setAttribute("added", "false");
+					
+					addLineCount++;
 				} else if (line.startsWith("@@")) {
 					// contains starting line and number of lines changed				
 					int index = line.indexOf(',');

@@ -153,6 +153,15 @@
             objectClass="org.eclipse.core.resources.IResource"
             state="true">
       </decorator>
+      <decorator
+            adaptable="true"
+            class="eclippers.patch.editor.markers.NewFileDecoratorLightweight"
+            id="eclippers.patch.editor.markers.decorator2"
+            label="Newly Created Files"
+            lightweight="true"
+            objectClass="org.eclipse.core.resources.IResource"
+            state="true">
+      </decorator>
    </extension>
 	
 </plugin>

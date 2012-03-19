@@ -1,5 +1,6 @@
 package textmarker;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -51,4 +52,7 @@ public class TextMarkerPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	public static ImageDescriptor getImageDescriptor(String path) {
+		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
 }
