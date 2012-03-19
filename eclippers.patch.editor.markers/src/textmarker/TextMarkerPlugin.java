@@ -1,14 +1,11 @@
 package textmarker;
 
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.eclipse.ui.IDecoratorManager;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.decorators.DecoratorManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import eclippers.patch.editor.markers.PackageDecoratorLightweight;
+import textmarker.actions.OpenWithMarkersListener;
 
 /**
  * The activator class controls the plug-in life cycle

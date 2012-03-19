@@ -22,6 +22,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
@@ -32,6 +33,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import textmarker.actions.OpenWithMarkersListener;
 import textmarker.add.AddMarkers;
 import eclippers.patch.editor.extension.PatchContainingEditor;
 import eclippers.patch.editor.markers.PackageDecoratorLightweight;
@@ -43,11 +45,13 @@ public class ParseXMLForMarkers {
 	public static ArrayList<RemovedLine> tempAffectedLines = new ArrayList<RemovedLine>();
 	public static ArrayList<RemovedLine> tempRemovedLines = new ArrayList<RemovedLine>();
 	
+	public static String currFilter = "";
 	
 	public static ArrayList<IPath> affected = new ArrayList<IPath>();
 	public static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 	
 	public static void parseXML(IProject proj, IEditorPart part, String pathPrefix, String filter) {
+		currFilter = filter;
 		affected = new ArrayList<IPath>();
 		tempAffected = new ArrayList<IPath>();
 		tempAffectedLines = new ArrayList<RemovedLine>();
@@ -244,7 +248,6 @@ public class ParseXMLForMarkers {
 					
 					//TODO reveal affected files in package explorer
 					PackageDecoratorLightweight.getDecorator().refresh();
-					
 				} catch (ParserConfigurationException e) {
 					e.printStackTrace();
 				} catch (SAXException e) {

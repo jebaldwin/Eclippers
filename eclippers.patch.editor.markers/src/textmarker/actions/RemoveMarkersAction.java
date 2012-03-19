@@ -5,6 +5,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
+import eclippers.patch.editor.markers.PackageDecoratorLightweight;
+
 import textmarker.add.AddMarkers;
 import textmarker.parse.ParseXMLForMarkers;
 
@@ -14,6 +16,7 @@ public class RemoveMarkersAction implements IWorkbenchWindowActionDelegate {
 	public void run(IAction action) {
 		ParseXMLForMarkers.clearLists();
 		ParseXMLForMarkers.clearAll();
+		PackageDecoratorLightweight.currProj = null;
 	}
 
 	@Override

@@ -21,6 +21,7 @@ public class PackageDecoratorLightweight extends LabelProvider implements ILight
 
 	private final static Color color = new Color(Display.getDefault(), 193,255,193);
 	private final static Color white = new Color(Display.getDefault(), 255,255,255);
+	public static Project currProj;
 
 	public boolean isLabelProperty(Object element, String property) {
 		return false;
@@ -50,6 +51,7 @@ public class PackageDecoratorLightweight extends LabelProvider implements ILight
 			if(resfile instanceof Project){
 				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 				if(((Project)resfile).getName().equals(file.getProject().getName())){
+					currProj = (Project)resfile;
 					decoration.setBackgroundColor(color);
 					break;
 				} else {

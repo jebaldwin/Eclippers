@@ -42,11 +42,16 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 	public void run(IAction action) {
 		//get all open editors
 		IEditorReference[] refs = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
-		if(refs.length == 0){
+		//if(refs.length == 0){
 			//get selected project
 			IProject proj = getSelectedProject();
 			ParseXMLForMarkers.parseXML(proj, null, "", null);
-		} else {
+			
+			
+			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+			//window.getSelectionService().addSelectionListener(new MySelectionListener());
+			window.getActivePage().addPartListener(new OpenWithMarkersListener());
+		/*} else {
 			for (int i = 0; i < refs.length; i++) {
 				IEditorReference ref = refs[i];
 				try {
@@ -63,7 +68,7 @@ public class AddMarkerAction implements IWorkbenchWindowActionDelegate {
 					e.printStackTrace();
 				}
 			}
-		}
+		}*/
 		
 		
 		/*IEditorInput ei = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput();
