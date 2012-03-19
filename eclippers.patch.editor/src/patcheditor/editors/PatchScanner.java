@@ -40,10 +40,10 @@ public class PatchScanner extends RuleBasedScanner {
 		rules[3] = new EndOfLineRule("--- ", diff);
 		rules[4] = new EndOfLineRule(" + ", defaultToken);
 		rules[5] = new EndOfLineRule(" - ", defaultToken);
-		rules[6] = new EndOfLineRule("+", add);
-		//rules[6] = new StartOfLineRule("+", add);
-		rules[7] = new EndOfLineRule("-", minus);
-		//rules[7] = new StartOfLineRule("-", minus);
+		//rules[6] = new EndOfLineRule("+", add);
+		rules[6] = new StartAndEndOfLineRule("+", add);
+		//rules[7] = new EndOfLineRule("-", minus);
+		rules[7] = new StartAndEndOfLineRule("-", minus);
 		rules[8] = new WhitespaceRule(new PatchWhitespaceDetector());
 		rules[9] = new EndOfLineRule("index ", diff);
 		
