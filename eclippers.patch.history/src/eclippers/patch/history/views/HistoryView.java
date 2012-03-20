@@ -7,17 +7,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.internal.resources.Folder;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -44,9 +42,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import eclippers.patch.history.Activator;
-
 import textmarker.parse.ParseXMLForMarkers;
+import eclippers.patch.history.Activator;
 
 public class HistoryView extends ViewPart {
 
@@ -58,7 +55,7 @@ public class HistoryView extends ViewPart {
 	private TableViewer viewer;
 	private Action action1;
 	public static Table table;
-	//public static String patchPrefix = "";
+	// public static String patchPrefix = "";
 
 	// Set column names
 	private String[] columnNames = new String[] { "Project", "Patch Name", "Date Applied" };
@@ -144,59 +141,71 @@ public class HistoryView extends ViewPart {
 
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "eclippers.patch.history.viewer");
-		// makeActions();
+		//makeActions();
 		// hookContextMenu();
 		hookDoubleClickAction();
+		//createToolbar();
+	}
+
+	/**
+	 * Create toolbar.
+	 */
+	private void createToolbar() {
+		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
+		mgr.add(action1);
+		//mgr.add(deleteItemAction);
 	}
 
 	public static void populate(IProject proj) {
-		if(proj == null)
+		if (proj == null)
 			return;
-		
-		//File xmlFile = new File(proj.getLocation() + File.separator + patchPrefix + File.separator + "patch.cfg");
-		//IFile xmlFile = proj.getFile("patch.cfg");
+
+		// File xmlFile = new File(proj.getLocation() + File.separator +
+		// patchPrefix + File.separator + "patch.cfg");
+		// IFile xmlFile = proj.getFile("patch.cfg");
 		File xmlFile = findFileInProject(proj, "patch.cfg");
 		table.removeAll();
-		
-		//if(file != null){
-			//File xmlFile = new File(proj.getLocation() + file.getPath().substring(proj.getName().length() + 1));
-			
-			if (xmlFile != null && xmlFile.exists()) {
-	
-				try {
-	
-					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-					DocumentBuilder builder;
-					builder = factory.newDocumentBuilder();
-					Document document = builder.parse(xmlFile);
-					String patchName = "";
-	
-					// get the root element
-					Element rootElement = document.getDocumentElement();
-	
-					// get each patch element
-					NodeList nl = rootElement.getElementsByTagName("patch");
-					if (nl != null && nl.getLength() > 0) {
-						for (int i = 0; i < nl.getLength(); i++) {
-							Element patchElement = (Element) nl.item(i);
-							patchName = patchElement.getAttribute("name");
-							String applied = patchElement.getAttribute("applied");
-							String date = patchElement.getAttribute("date");
-	
-							TableItem item = new TableItem(table, 0, 0);
-							item.setText(new String[] { proj.getName(), patchName, date });
-						}
+
+		// if(file != null){
+		// File xmlFile = new File(proj.getLocation() +
+		// file.getPath().substring(proj.getName().length() + 1));
+
+		if (xmlFile != null && xmlFile.exists()) {
+
+			try {
+
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder;
+				builder = factory.newDocumentBuilder();
+				Document document = builder.parse(xmlFile);
+				String patchName = "";
+
+				// get the root element
+				Element rootElement = document.getDocumentElement();
+
+				// get each patch element
+				NodeList nl = rootElement.getElementsByTagName("patch");
+				if (nl != null && nl.getLength() > 0) {
+					for (int i = 0; i < nl.getLength(); i++) {
+						Element patchElement = (Element) nl.item(i);
+						patchName = patchElement.getAttribute("name");
+						String applied = patchElement.getAttribute("applied");
+						String date = patchElement.getAttribute("date");
+
+						TableItem item = new TableItem(table, 0, 0);
+						item.setText(new String[] { proj.getName(), patchName, date });
 					}
-	
-				} catch (ParserConfigurationException e) {
-					e.printStackTrace();
-				} catch (SAXException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
 				}
+
+			} catch (ParserConfigurationException e) {
+				e.printStackTrace();
+			} catch (SAXException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		//}
+		}
+		// }
 	}
 
 	private IProject getSelectedProject() {
@@ -259,7 +268,7 @@ public class HistoryView extends ViewPart {
 				// ParseXMLForMarkers.parseXML(proj, null, ".lecode.git",
 				// brickName);
 
-				//showMessage(project + " " + patchName);
+				// showMessage(project + " " + patchName);
 				IProject proj = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
 				ParseXMLForMarkers.clearLists();
 				ParseXMLForMarkers.clearAll();
@@ -278,51 +287,46 @@ public class HistoryView extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
-	
-	private static File findFileInProject(IProject proj, String fileName){
-		//search two levels down for the patch.cfg file
-		
+
+	private static File findFileInProject(IProject proj, String fileName) {
+		// search two levels down for the patch.cfg file
+
 		File projFolder = proj.getLocation().toFile();
 		File[] files = projFolder.listFiles();
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
-			if(file.isDirectory()){
-				File [] moreFiles = file.listFiles();
+			if (file.isDirectory()) {
+				File[] moreFiles = file.listFiles();
 				for (int j = 0; j < moreFiles.length; j++) {
 					File subFile = moreFiles[j];
-					if(subFile.getName().equals(fileName)){
+					if (subFile.getName().equals(fileName)) {
 						return subFile;
 					}
 				}
 			} else {
-				if(file.getName().equals(fileName)){
+				if (file.getName().equals(fileName)) {
 					return file;
 				}
 			}
 		}
-		/*try{
-			IResource[] resources = proj.members(IProject.INCLUDE_HIDDEN);
-			for (int i = 0; i < resources.length; i++) {
-				IResource res = resources[i];
-				if(res instanceof org.eclipse.core.internal.resources.File){
-					if(res.getName().equals(fileName)){
-						return ((org.eclipse.core.internal.resources.File)res).getFullPath().toFile();
-					}
-				} else if(res instanceof Folder){
-					IResource[] ress = ((Folder)res).members();
-					for (int j = 0; j < ress.length; j++) {
-						IResource subres = ress[j];
-						if(subres instanceof org.eclipse.core.internal.resources.File){
-							if(subres.getName().equals(fileName)){
-								return ((org.eclipse.core.internal.resources.File)subres).getFullPath().toFile();
-							}
-						}
-					}
-				}				
-			}
-		} catch(CoreException ce) {
-			
-		}*/
+		/*
+		 * try{ IResource[] resources = proj.members(IProject.INCLUDE_HIDDEN);
+		 * for (int i = 0; i < resources.length; i++) { IResource res =
+		 * resources[i]; if(res instanceof
+		 * org.eclipse.core.internal.resources.File){
+		 * if(res.getName().equals(fileName)){ return
+		 * ((org.eclipse.core.internal
+		 * .resources.File)res).getFullPath().toFile(); } } else if(res
+		 * instanceof Folder){ IResource[] ress = ((Folder)res).members(); for
+		 * (int j = 0; j < ress.length; j++) { IResource subres = ress[j];
+		 * if(subres instanceof org.eclipse.core.internal.resources.File){
+		 * if(subres.getName().equals(fileName)){ return
+		 * ((org.eclipse.core.internal
+		 * .resources.File)subres).getFullPath().toFile(); } } } } } }
+		 * catch(CoreException ce) {
+		 * 
+		 * }
+		 */
 		return null;
 	}
 }
