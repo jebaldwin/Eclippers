@@ -198,7 +198,7 @@ public class ParseXMLForMarkers {
 													int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
 													int tempLineNum = lineNumber + (newLine - originalLine);
 													
-													AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false, patchLine);
+													//AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false, patchLine);
 													RemovedLine rl = new RemovedLine(tempLineNum, newLine, originalLine, codeLine, patchLine, checkFile);
 													remLines.add(rl);
 													
