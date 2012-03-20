@@ -196,7 +196,7 @@ public class ParseXMLForMarkers {
 													int originalLine = Integer.parseInt(((Element)offsetElement.getParentNode()).getAttribute("start"));
 													String codeLine = offsetElement.getAttribute("content");
 													int patchLine = Integer.parseInt(offsetElement.getAttribute("patchLine"));
-													int tempLineNum = lineNumber + (newLine - originalLine);
+													int tempLineNum = lineNumber;// + (newLine - originalLine);
 													
 													//AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber + (newLine - originalLine), proj, codeLine, true, false, patchLine);
 													RemovedLine rl = new RemovedLine(tempLineNum, newLine, originalLine, codeLine, patchLine, checkFile);
@@ -252,9 +252,12 @@ public class ParseXMLForMarkers {
 						for (int i = 0; i < els.length; i++) {
 							RemovedLine offsetElement = els[i];
 							try {
-								//TODO strikethrough?
-								doc.replace(AddMarkers.getCharStart(offsetElement.lineNumber-1, offsetElement.checkFile)-1, 0, offsetElement.codeLine + "\n");
-								AddMarkers.addRemovedMarkerToFile(patchName, offsetElement.checkFile.getAbsolutePath(), offsetElement.lineNumber-1, proj, offsetElement.codeLine, true, offsetElement.patchLine, doc.get());
+								//TODO JB: this doesn't insert properly and if two editors are open, inserts into Java one
+								int offset = AddMarkers.getCharStart(offsetElement.lineNumber-1, offsetElement.checkFile)-1;
+								if(offset == -1)
+									offset = 0;
+								doc.replace(offset, 0, offsetElement.codeLine + "\n");
+								//AddMarkers.addRemovedMarkerToFile(patchName, offsetElement.checkFile.getAbsolutePath(), offsetElement.lineNumber-1, proj, offsetElement.codeLine, true, offsetElement.patchLine, doc.get());
 							} catch (BadLocationException e) {
 								e.printStackTrace();
 							}		
