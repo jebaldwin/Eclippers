@@ -28,6 +28,15 @@ public class StartAndEndOfLineRule extends PatternRule {
 			int lastChar = scanner.read();
 			int c= scanner.read();
 			
+			if(fStartSequence.length == 1){
+				if(lastChar == -1 && c == fStartSequence[0]){
+					if (sequenceDetected(scanner, fStartSequence, false)) {
+						if (endSequenceDetected(scanner))
+							return fToken;
+					}
+				} 
+			}
+			
 			if (c == fStartSequence[0] && (lastChar == '\r' || lastChar == '\n')) {
 				if (sequenceDetected(scanner, fStartSequence, false)) {
 					if (endSequenceDetected(scanner))
