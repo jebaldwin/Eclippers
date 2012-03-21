@@ -1,7 +1,6 @@
 package patcheditor.editors;
 
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
@@ -9,14 +8,13 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 
-public class PatchConfiguration extends TextSourceViewerConfiguration {
+public class DiffConfiguration extends TextSourceViewerConfiguration {
 	private RuleBasedScanner scanner;
-	private ColorManager colorManager;
+	private DiffColorManager colorManager;
 
-	public PatchConfiguration(ColorManager colorManager) {
+	public DiffConfiguration(DiffColorManager colorManager) {
 		this.colorManager = colorManager;
 	}
 
@@ -27,8 +25,8 @@ public class PatchConfiguration extends TextSourceViewerConfiguration {
 	protected RuleBasedScanner getPatchScanner() {
 		if (scanner == null) {
 			// scanner = new PatchScanner(colorManager);
-			scanner = new PatchedJavaXMLScanner(colorManager);
-			scanner.setDefaultReturnToken(new Token(new TextAttribute(colorManager.getColor(IPatchColorConstants.DEFAULT))));
+			scanner = new DiffJavaXMLScanner(colorManager);
+			scanner.setDefaultReturnToken(new Token(new TextAttribute(colorManager.getColor(IDiffColorConstants.DEFAULT))));
 		}
 		return scanner;
 	}
@@ -37,16 +35,16 @@ public class PatchConfiguration extends TextSourceViewerConfiguration {
 		PresentationReconciler reconciler = new PresentationReconciler();
 
 		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getPatchScanner());
-		reconciler.setDamager(dr, PatchScanner.PATCH_STRING);
-		reconciler.setRepairer(dr, PatchScanner.PATCH_STRING);
+		reconciler.setDamager(dr, DiffJavaXMLScanner.PATCH_STRING);
+		reconciler.setRepairer(dr, DiffJavaXMLScanner.PATCH_STRING);
 
 		dr = new DefaultDamagerRepairer(getPatchScanner());
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
-		NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(new TextAttribute(colorManager.getColor(IPatchColorConstants.DEFAULT)));
-		reconciler.setDamager(ndr, PatchScanner.PATCH_STRING);
-		reconciler.setRepairer(ndr, PatchScanner.PATCH_STRING);
+		NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(new TextAttribute(colorManager.getColor(IDiffColorConstants.DEFAULT)));
+		reconciler.setDamager(ndr, DiffJavaXMLScanner.PATCH_STRING);
+		reconciler.setRepairer(ndr, DiffJavaXMLScanner.PATCH_STRING);
 
 		return reconciler;
 	}

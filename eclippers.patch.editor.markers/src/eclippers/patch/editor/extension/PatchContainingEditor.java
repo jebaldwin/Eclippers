@@ -2,9 +2,9 @@ package eclippers.patch.editor.extension;
 
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 
-import patcheditor.editors.PatchEditor;
+import patcheditor.editors.DiffEditor;
 
-public class PatchContainingEditor extends PatchEditor {
+public class PatchContainingEditor extends DiffEditor {
 	
 	@Override
 	public boolean isEditable() {

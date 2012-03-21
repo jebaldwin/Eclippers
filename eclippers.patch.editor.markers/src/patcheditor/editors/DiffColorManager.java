@@ -8,7 +8,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
-public class ColorManager {
+public class DiffColorManager {
 
 	protected Map fColorTable = new HashMap(10);
 

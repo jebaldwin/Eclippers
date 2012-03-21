@@ -12,8 +12,10 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
-public class PatchedJavaXMLScanner extends RuleBasedScanner {
+public class DiffJavaXMLScanner extends RuleBasedScanner {
 
+	public static final String PATCH_STRING = "___diff_";
+	
 	private String[] JavaKeys = {"abstract", "continue", "for", "new", "switch",
 			"assert", "default", "goto", "package", "synchronized", "boolean", "do", "if",
 			"byte",	"else",	"import", "public",	"throws", "break", "protected",
@@ -24,20 +26,20 @@ public class PatchedJavaXMLScanner extends RuleBasedScanner {
 			"class", "finally",	"long",	"strictfp",	"volatile",
 			"const", "float", "native",	"super", "while"};
 	
-	public PatchedJavaXMLScanner(ColorManager manager) {
-		IToken add = new Token(new TextAttribute(manager.getColor(IPatchColorConstants.DEFAULT), manager.getColor(IPatchColorConstants.GREEN), 0));
-		IToken minus = new Token(new TextAttribute(manager.getColor(IPatchColorConstants.DEFAULT), manager.getColor(IPatchColorConstants.RED), TextAttribute.STRIKETHROUGH));
-		IToken offset = new Token(new TextAttribute(manager.getColor(IPatchColorConstants.OFFSET)));
-		IToken diff = new Token(new TextAttribute(manager.getColor(IPatchColorConstants.BLUE)));
-		IToken defaultToken = new Token(new TextAttribute(manager.getColor(IPatchColorConstants.DEFAULT)));
+	public DiffJavaXMLScanner(DiffColorManager manager) {
+		IToken add = new Token(new TextAttribute(manager.getColor(IDiffColorConstants.DEFAULT), manager.getColor(IDiffColorConstants.GREEN), 0));
+		IToken minus = new Token(new TextAttribute(manager.getColor(IDiffColorConstants.DEFAULT), manager.getColor(IDiffColorConstants.RED), TextAttribute.STRIKETHROUGH));
+		IToken offset = new Token(new TextAttribute(manager.getColor(IDiffColorConstants.OFFSET)));
+		IToken diff = new Token(new TextAttribute(manager.getColor(IDiffColorConstants.BLUE)));
+		IToken defaultToken = new Token(new TextAttribute(manager.getColor(IDiffColorConstants.DEFAULT)));
 
 		// comments, keywords, font
-		IToken comment = new Token(new TextAttribute(manager.getColor(IPatchColorConstants.COMMENT)));
-		IToken string = new Token(new TextAttribute(manager.getColor(IPatchColorConstants.STRING)));
-		IToken keyword = new Token(new TextAttribute(manager.getColor(IPatchColorConstants.KEYWORD)));
+		IToken comment = new Token(new TextAttribute(manager.getColor(IDiffColorConstants.COMMENT)));
+		IToken string = new Token(new TextAttribute(manager.getColor(IDiffColorConstants.STRING)));
+		IToken keyword = new Token(new TextAttribute(manager.getColor(IDiffColorConstants.KEYWORD)));
 
 		// xml
-		IToken xmlComment = new Token(new TextAttribute(manager.getColor(IPatchColorConstants.XML_COMMENT)));
+		IToken xmlComment = new Token(new TextAttribute(manager.getColor(IDiffColorConstants.XML_COMMENT)));
 
 		IRule[] rules = new IRule[23];
 		rules[0] = new SingleLineRule("@@", "@@", offset);
@@ -48,7 +50,7 @@ public class PatchedJavaXMLScanner extends RuleBasedScanner {
 		rules[5] = new EndOfLineRule(" - ", defaultToken);
 		rules[6] = new StartAndEndOfLineRule("+", add);
 		rules[7] = new StartAndEndOfLineRule("-", minus);
-		rules[8] = new WhitespaceRule(new PatchWhitespaceDetector());
+		rules[8] = new WhitespaceRule(new DiffWhitespaceDetector());
 		rules[9] = new EndOfLineRule("index ", diff);
 
 		rules[10] = new EndOfLineRule("//", comment);

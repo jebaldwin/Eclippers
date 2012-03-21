@@ -20,7 +20,7 @@ public class PatchScanner extends RuleBasedScanner {
 		IToken diff = new Token(new TextAttribute(manager.getColor(IPatchColorConstants.BLUE)));
 		IToken defaultToken = new Token(new TextAttribute(manager.getColor(IPatchColorConstants.DEFAULT)));
 
-		IRule[] rules = new IRule[10];
+		IRule[] rules = new IRule[11];
 		rules[0] = new SingleLineRule("@@", "@@", offset);
 		rules[1] = new EndOfLineRule("diff ", diff);
 		rules[2] = new EndOfLineRule("+++ ", diff);
@@ -33,7 +33,8 @@ public class PatchScanner extends RuleBasedScanner {
 		rules[7] = new StartAndEndOfLineRule("-", minus);
 		rules[8] = new WhitespaceRule(new PatchWhitespaceDetector());
 		rules[9] = new EndOfLineRule("index ", diff);
-
+		rules[10] = new EndOfLineRule("new file mode ", diff);
+		
 		setRules(rules);
 	}
 }

@@ -34,8 +34,8 @@ public class PatchConfiguration extends TextSourceViewerConfiguration {
 
 	protected RuleBasedScanner getPatchScanner() {
 		if (scanner == null) {
-			// scanner = new PatchScanner(colorManager);
-			scanner = new PatchedJavaXMLScanner(colorManager);
+			scanner = new PatchScanner(colorManager);
+			//scanner = new PatchedJavaXMLScanner(colorManager);
 			scanner.setDefaultReturnToken(new Token(new TextAttribute(colorManager.getColor(IPatchColorConstants.DEFAULT))));
 		}
 		return scanner;

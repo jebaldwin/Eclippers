@@ -2,7 +2,7 @@ package patcheditor.editors;
 
 import org.eclipse.swt.graphics.RGB;
 
-public interface IPatchColorConstants {
+public interface IDiffColorConstants {
 	RGB DEFAULT = new RGB(0, 0, 0);
 	RGB OFFSET = new RGB(204, 0, 0);
 	RGB MINUS = new RGB(102, 51, 255);

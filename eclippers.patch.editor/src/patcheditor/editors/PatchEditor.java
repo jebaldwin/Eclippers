@@ -5,12 +5,12 @@ import org.eclipse.ui.editors.text.TextEditor;
 
 public class PatchEditor extends TextEditor {
 
-	private ColorManager colorManager;
+	private DiffColorManager colorManager;
 
 	public PatchEditor() {
 		super();
-		colorManager = new ColorManager();
-		setSourceViewerConfiguration(new PatchConfiguration(colorManager));
+		colorManager = new DiffColorManager();
+		setSourceViewerConfiguration(new DiffConfiguration(colorManager));
 		setDocumentProvider(new FileDocumentProvider());
 	}
 	
