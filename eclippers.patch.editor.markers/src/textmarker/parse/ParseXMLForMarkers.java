@@ -266,12 +266,13 @@ public class ParseXMLForMarkers {
 
 								if (affpath.equals(fpath))
 									try {
-										// TODO JB: this doesn't insert properly
-										// int offset =
-										// AddMarkers.getCharStart(offsetElement.lineNumber-1,
-										// offsetElement.checkFile);
-										int offset = AddMarkers.getCharStart(offsetElement.lineNumber, editor);
-										doc.replace(offset, 0, offsetElement.codeLine + "\n");
+										int offset = doc.getLineOffset(offsetElement.lineNumber-1);
+										String currLine = doc.get(offset, 5);
+										
+										//don't re-add lines to open diff viewer
+										if(!currLine.startsWith("-"))
+											doc.replace(offset, 0, "-" + offsetElement.codeLine + "\n");
+										
 										// AddMarkers.addRemovedMarkerToFile(patchName,
 										// offsetElement.checkFile.getAbsolutePath(),
 										// offsetElement.lineNumber-1, proj,

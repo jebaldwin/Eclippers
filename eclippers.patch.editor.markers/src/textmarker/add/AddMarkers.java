@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -28,6 +29,11 @@ public class AddMarkers {
 		IPath path = new Path(fileName);
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
 		
+		IFile editorFile = ((FileEditorInput) part.getEditorInput()).getFile();
+		if(!file.equals(editorFile)){
+			return;
+		}
+		
 		try {
 			IMarker marker = null;
 			boolean conflict = false;
@@ -43,8 +49,6 @@ public class AddMarkers {
 						marker = file.createMarker("patchLinesMarker");
 						marker.setAttribute("description", code);
 						marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line added.");
-						//int lineStart = getCharStart(lineNum - 1, javaFile);
-						System.out.println(lineNum - 1);
 						int lineStart = getCharStart(lineNum - 1, part);
 						marker.setAttribute(IMarker.LINE_NUMBER, lineNum -1);
 						marker.setAttribute(IMarker.CHAR_START, lineStart);
