@@ -1,13 +1,5 @@
 package textmarker.add;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -16,49 +8,29 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IDecoratorManager;
-import org.eclipse.ui.PlatformUI;
-
-import textmarker.parse.ParseXMLForMarkers;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class AddMarkers {
 
-	public static void addMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean applied, boolean lineAdded, int patchLine) {
-
-		// allow for default context numbers
-		//TODO JB: fix for deleted files
+	public static void addMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean applied, boolean lineAdded, int patchLine, IEditorPart part) {
+		
+		if(part == null)
+			return;
+		
+		// allow for default context numbers when not applied
 		if (!applied)
 			lineNum = lineNum + 3;
 	
-		int index = fileName.indexOf(proj.getName());
 		IPath path = new Path(fileName);
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
-		File javaFile = new File(fileName);
 		
 		try {
 			IMarker marker = null;
 			boolean conflict = false;
-
-			// deprecated: look for conflicts with other markers (e.g. AspectJ)
-			/*
-			 * IMarker[] markers = iFile.findMarkers(null, true,
-			 * IResource.DEPTH_ZERO);
-			 * 
-			 * for (int i = markers.length - 1; i >= 0; i--) { IMarker
-			 * markerAtIndex = markers[i]; try { int lineOfMarker = ((Integer)
-			 * markerAtIndex.getAttribute(IMarker.LINE_NUMBER)).intValue();
-			 * 
-			 * 
-			 * if (lineOfMarker == lineNum) { marker =
-			 * iFile.createMarker(IMarker.PROBLEM);
-			 * marker.setAttribute(IMarker.MESSAGE, patchName +
-			 * " patch and possibly an aspect apply here!"); conflict = true; }
-			 * } catch (NullPointerException npe) {
-			 * 
-			 * } }
-			 */
 
 			if (!conflict) {
 
@@ -71,15 +43,21 @@ public class AddMarkers {
 						marker = file.createMarker("patchLinesMarker");
 						marker.setAttribute("description", code);
 						marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line added.");
-						int lineStart = getCharStart(lineNum - 1, javaFile);
+						//int lineStart = getCharStart(lineNum - 1, javaFile);
+						System.out.println(lineNum - 1);
+						int lineStart = getCharStart(lineNum - 1, part);
 						marker.setAttribute(IMarker.LINE_NUMBER, lineNum -1);
 						marker.setAttribute(IMarker.CHAR_START, lineStart);
-						marker.setAttribute(IMarker.CHAR_END, lineStart + code.length());
+						marker.setAttribute(IMarker.CHAR_END, lineStart + getLineLength(lineNum - 1, part));
 					} else {
+						/*
+						 * Should never be called now, replaced with next function
+						 * 
 						marker = file.createMarker("patchLinesRemovedMarker");
 						marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line removed.");
 						marker.setAttribute(IMarker.CHAR_START, getCharStart(lineNum - 1, javaFile));
 						marker.setAttribute(IMarker.CHAR_END, getCharStart(lineNum, javaFile));
+						*/
 					}
 				}
 			}
@@ -95,12 +73,7 @@ public class AddMarkers {
 		}
 	}
 
-	public static void addRemovedMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean lineAdded, int patchLine, String fileContents) {
-		// TODO this works the first time the file is opened, but a refresh
-		// after that does strange higlighting things
-		//int index = fileName.indexOf(proj.getName());
-		//IPath path = new Path(fileName.substring(index));
-		//IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+	public static void addRemovedMarkerToFile(String patchName, String fileName, int lineNum, IProject proj, String code, boolean lineAdded, int patchLine, String fileContents, IEditorPart part) {
 
 		IPath path = new Path(fileName);
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
@@ -113,9 +86,9 @@ public class AddMarkers {
 			IMarker marker = null;
 			marker = file.createMarker("patchLinesRemovedMarker");
 			marker.setAttribute(IMarker.MESSAGE, patchName + " patch has applied here. Line removed.");
-			int lineStart = getCharStartFromString(lineNum, fileContents) - 1;
+			int lineStart = getCharStart(lineNum - 1, part);
 			marker.setAttribute(IMarker.CHAR_START, lineStart);
-			marker.setAttribute(IMarker.CHAR_END, lineStart + code.length());
+			marker.setAttribute(IMarker.CHAR_END, lineStart + getLineLength(lineNum - 1, part));
 			marker.setAttribute("name", patchName);
 			marker.setAttribute("project", proj);
 			marker.setAttribute("patched", true);
@@ -152,95 +125,42 @@ public class AddMarkers {
 		}
 	}
 
-	public static void clearMarkers(IFile iFile, String ownerName, IProject proj) {
-
-		//int index = fileName.indexOf(proj.getName());
-		//IPath path = new Path(fileName.substring(index));
-		//IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-
-		//IPath path = new Path(fileName);
-		//IFile iFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+	public static void clearMarkers(IFile iFile, String ownerName, IProject proj) {		
 		if(iFile.getName().startsWith(".")){
 			//hidden file
 			return;
 		}
+		
 		try {
 			iFile.deleteMarkers("patchAppliesMarker", true, IResource.DEPTH_ZERO);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-		try {
 			iFile.deleteMarkers("patchLinesMarker", true, IResource.DEPTH_ZERO);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-		try {
 			iFile.deleteMarkers("patchLinesRemovedMarker", true, IResource.DEPTH_ZERO);
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 	}
-
-	public static int getCharStart(int lineNum, File javaFile) {
-		//TODO JB: use last position so search time is quicker
+	
+	public static int getCharStart(int lineNum, IEditorPart part) {
+		ITextEditor teditor = (ITextEditor) part;
+		IDocumentProvider dp = teditor.getDocumentProvider();
+		IDocument doc = dp.getDocument(teditor.getEditorInput());
 		try {
-			BufferedReader read = new BufferedReader(new FileReader(javaFile));
-			int lineNumber = 0;
-			String line = "";
-			int charPos = 0;
-			int carrLength = 1;
-			
-			try {
-				while ((line = read.readLine()) != null) {
-					//The three are "\r", "\n" and "\r\n"
-					if(lineNumber == 0 && line.endsWith("\r\n")){
-						carrLength = 2;
-					}
-					if (lineNum == lineNumber) {
-						break;
-					}
-
-					charPos += line.length() + carrLength;
-					lineNumber++;
-				}
-
-				return charPos;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} catch (FileNotFoundException e) {
+			return doc.getLineOffset(lineNum);
+		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-
-		return 0;
+		return -1;
 	}
-
-	public static int getCharStartFromString(int lineNum, String javaFile) {
-
-		BufferedReader read = new BufferedReader(new StringReader(javaFile));
-		int lineNumber = 0;
-		String line = "";
-		int charPos = 0;
-		int carrLength = 1;
-
+	
+	public static int getLineLength(int lineNum, IEditorPart part) {
+		ITextEditor teditor = (ITextEditor) part;
+		IDocumentProvider dp = teditor.getDocumentProvider();
+		IDocument doc = dp.getDocument(teditor.getEditorInput());
 		try {
-			while ((line = read.readLine()) != null) {
-				if(lineNumber == 0 && line.endsWith("\r\n")){
-					carrLength = 2;
-				}
-				if (lineNum == lineNumber) {
-					break;
-				}
-
-				charPos += line.length() + carrLength; 
-				lineNumber++;
-			}
-
-			return charPos;
-		} catch (IOException e) {
+			return doc.getLineLength(lineNum);
+		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-
-		return 0;
+		return -1;
 	}
 }
