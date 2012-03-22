@@ -41,7 +41,7 @@ public class DiffJavaXMLScanner extends RuleBasedScanner {
 		// xml
 		IToken xmlComment = new Token(new TextAttribute(manager.getColor(IDiffColorConstants.XML_COMMENT)));
 
-		IRule[] rules = new IRule[23];
+		IRule[] rules = new IRule[22];
 		rules[0] = new SingleLineRule("@@", "@@", offset);
 		rules[1] = new EndOfLineRule("diff ", diff);
 		rules[2] = new EndOfLineRule("+++ ", diff);
@@ -66,13 +66,13 @@ public class DiffJavaXMLScanner extends RuleBasedScanner {
 		rules[15] = wordRule;
 		
 		// XML rules
-		rules[16] = new MultiLineRule("<!--", "-->", xmlComment);
-		rules[17] = new SingleLineRule("<?", "?>", xmlComment);
-		rules[18] = new SingleLineRule("<", " ", comment);
-		rules[19] = new SingleLineRule("</", ">", comment);
-		rules[20] = new SingleLineRule("> ", "", comment);
-		rules[21] = new SingleLineRule(">", "\r", comment);
-		rules[22] = new SingleLineRule(">", "\n", comment);
+		//rules[16] = new MultiLineRule("<!--", "-->", xmlComment);
+		rules[16] = new SingleLineRule("<?", "?>", xmlComment);
+		rules[17] = new SingleLineRule("<", " ", comment);
+		rules[18] = new SingleLineRule("</", ">", comment);
+		rules[19] = new SingleLineRule("> ", "", comment);
+		rules[20] = new SingleLineRule(">", "\r", comment);
+		rules[21] = new SingleLineRule(">", "\n", comment);
 		
 		setRules(rules);
 	}

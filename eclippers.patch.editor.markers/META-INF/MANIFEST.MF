@@ -22,6 +22,7 @@ Eclipse-LazyStart: true
 Export-Package: eclippers.patch.editor.extension,
  patcheditor.editors,
  textmarker.actions,
+ textmarker.add,
  textmarker.parse
 Import-Package: com.android.ide.eclipse.adt.internal.editors,
  org.eclipse.core.expressions

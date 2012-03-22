@@ -1,5 +1,6 @@
 package eclippers.patch.history.views;
 
+import org.eclipse.ui.part.FileEditorInput;
 import java.io.File;
 import java.io.IOException;
 
@@ -7,6 +8,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -32,16 +34,22 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.ViewContentProvider;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import textmarker.add.AddMarkers;
 import textmarker.parse.ParseXMLForMarkers;
 import eclippers.patch.history.Activator;
 
@@ -272,6 +280,7 @@ public class HistoryView extends ViewPart {
 				IProject proj = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
 				ParseXMLForMarkers.clearLists();
 				ParseXMLForMarkers.clearAll();
+				
 				ParseXMLForMarkers.parseXML(proj, null, ".lecode.git", patchName);
 			}
 		});

@@ -169,7 +169,25 @@ public class ParseXMLForMarkers {
 												// lineNumber - offset, proj,
 												// codeLine, true, true,
 												// patchLine);
-												AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, codeLine, true, true, patchLine, part);
+												
+												IEditorPart thisPart = null;
+												for (int m = 0; m < refs.length; m++) {
+													try {
+														IFile editorFile = (((FileEditorInput)refs[m].getEditorInput()).getFile());
+														String editorPath = editorFile.getProject().getLocation().toString() + File.separatorChar + editorFile.getProjectRelativePath();
+														if(editorPath.equals(checkFile.getAbsolutePath())){
+															thisPart = refs[m].getEditor(false);
+															break;
+														}
+													} catch (PartInitException e) {
+														e.printStackTrace();
+													}
+													
+												}
+												
+												if(thisPart != null)
+													AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, codeLine, true, true, patchLine, thisPart);
+												
 												RemovedLine rl = new RemovedLine(lineNumber, newLine, originalLine, codeLine, patchLine, checkFile);
 
 												if (filter != null && patchName.equals(filter)) {
