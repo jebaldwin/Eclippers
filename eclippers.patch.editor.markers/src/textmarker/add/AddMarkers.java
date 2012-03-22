@@ -11,9 +11,11 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
 public class AddMarkers {
 
@@ -145,26 +147,62 @@ public class AddMarkers {
 	}
 	
 	public static int getCharStart(int lineNum, IEditorPart part) {
-		ITextEditor teditor = (ITextEditor) part;
-		IDocumentProvider dp = teditor.getDocumentProvider();
-		IDocument doc = dp.getDocument(teditor.getEditorInput());
-		try {
-			return doc.getLineOffset(lineNum);
-		} catch (BadLocationException e) {
-			e.printStackTrace();
+		
+		IDocument doc = null;
+		
+		if(part instanceof ITextEditor){
+			ITextEditor teditor = (ITextEditor) part;
+			IDocumentProvider dp = teditor.getDocumentProvider();
+			doc = dp.getDocument(teditor.getEditorInput());
+		} else if(part instanceof FormEditor) {
+			FormEditor feditor = (FormEditor) part;
+			IEditorPart curr = (IEditorPart) feditor.getActiveEditor();
+			
+			if(curr instanceof StructuredTextEditor){
+				StructuredTextEditor teditor = (StructuredTextEditor) curr;
+				IDocumentProvider dp = teditor.getDocumentProvider();
+				doc = dp.getDocument(teditor.getEditorInput());
+			}
+		}
+		
+		if(doc != null){		
+			try {
+				return doc.getLineOffset(lineNum);
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
 		}
 		return -1;
 	}
 	
 	public static int getLineLength(int lineNum, IEditorPart part) {
-		ITextEditor teditor = (ITextEditor) part;
-		IDocumentProvider dp = teditor.getDocumentProvider();
-		IDocument doc = dp.getDocument(teditor.getEditorInput());
-		try {
-			return doc.getLineLength(lineNum);
-		} catch (BadLocationException e) {
-			e.printStackTrace();
+		
+		IDocument doc = null;
+		
+		if(part instanceof ITextEditor){
+			ITextEditor teditor = (ITextEditor) part;
+			IDocumentProvider dp = teditor.getDocumentProvider();
+			doc = dp.getDocument(teditor.getEditorInput());
+			
+		} else if(part instanceof FormEditor) {
+			FormEditor feditor = (FormEditor) part;
+			IEditorPart curr = (IEditorPart) feditor.getActiveEditor();
+			
+			if(curr instanceof StructuredTextEditor){
+				StructuredTextEditor teditor = (StructuredTextEditor) curr;
+				IDocumentProvider dp = teditor.getDocumentProvider();
+				doc = dp.getDocument(teditor.getEditorInput());
+			}
 		}
+		
+		if(doc != null){		
+			try {
+				return doc.getLineLength(lineNum);
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		return -1;
 	}
 }

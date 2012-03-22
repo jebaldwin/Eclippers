@@ -46,7 +46,6 @@ public class NewFileDecoratorLightweight extends LabelProvider implements ILight
 					decoration.addOverlay(null);
 				}
 			} else {*/
-				//TODO JB:check if file is newly added
 				if(path.toString().equals(res.toString())){
 					decoration.addOverlay(lockDescriptor, IDecoration.TOP_RIGHT);
 					break;
