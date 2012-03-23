@@ -4,7 +4,8 @@
 <xsl:template match="patchdata">
 	<xsl:for-each select="patch/file">
 Group:<xsl:value-of select="@package"/>
-Member:<xsl:value-of select="@name"/> Size:<xsl:value-of select="@length"/> Tip:<xsl:value-of select="@package"/>.<xsl:value-of select="@name"/>.java</xsl:for-each>
+<xsl:variable name="package" select="@package"/>
+Member:<xsl:value-of select="@name"/> Size:<xsl:value-of select="@length"/> Tip:<xsl:value-of select="$package"/><xsl:if test="string-length($package) != 0">.</xsl:if><xsl:value-of select="@name"/></xsl:for-each>
 </xsl:template>
    
 </xsl:stylesheet>

@@ -35,7 +35,7 @@ public class ConvertXMLtoMVIS {
 			String xslPath = "";
 			Bundle bundle = Platform.getBundle(PatchVisualiserPlugin.PLUGIN_ID);
 			if (bundle != null) {
-				xslPath = bundle.getLocation().replace("reference:file:/", "") + "src" + File.separator + "visualiser" + File.separator + "convertxml" + File.separator + CONTENT_XSL;
+				xslPath = bundle.getLocation().replace("reference:file:", "") + "src" + File.separator + "visualiser" + File.separator + "convertxml" + File.separator + CONTENT_XSL;
 			}
 			String contents = xslConvert(xslPath, proj, "");
 			
@@ -61,7 +61,7 @@ public class ConvertXMLtoMVIS {
 			String xslPath = "";
 			Bundle bundle = Platform.getBundle(PatchVisualiserPlugin.PLUGIN_ID);
 			if (bundle != null) {
-				xslPath = bundle.getLocation().replace("reference:file:/", "") + "src" + File.separator + "visualiser" + File.separator + "convertxml" + File.separator + MARKUP_XSL;
+				xslPath = bundle.getLocation().replace("reference:file:", "") + "src" + File.separatorChar + "visualiser" + File.separatorChar + "convertxml" + File.separatorChar + MARKUP_XSL;
 			}
 			String contents = xslConvert(xslPath, proj, "");
 			
@@ -81,9 +81,9 @@ public class ConvertXMLtoMVIS {
 
 		try {
 			File xslFile = new File(conversionFile);
-			File xmlFile = new File(proj.getLocation() + File.separator + pathPrefix + File.separator + "patch.cfg");
+			File xmlFile = findFileInProject(proj, "patch.cfg");//new File(proj.getLocation() + File.separator + pathPrefix + File.separator + "patch.cfg");
 
-			if(xmlFile.exists()){
+			if(xmlFile != null && xmlFile.exists()){
 				TransformerFactory transFact = TransformerFactory.newInstance();
 	
 				try {
@@ -105,5 +105,28 @@ public class ConvertXMLtoMVIS {
 		}
 
 		return "";
+	}
+	
+	private static File findFileInProject(IProject proj, String fileName) {
+		// search two levels down for the patch.cfg file
+		File projFolder = proj.getLocation().toFile();
+		File[] files = projFolder.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+			if (file.isDirectory()) {
+				File[] moreFiles = file.listFiles();
+				for (int j = 0; j < moreFiles.length; j++) {
+					File subFile = moreFiles[j];
+					if (subFile.getName().equals(fileName)) {
+						return subFile;
+					}
+				}
+			} else {
+				if (file.getName().equals(fileName)) {
+					return file;
+				}
+			}
+		}
+		return null;
 	}
 }

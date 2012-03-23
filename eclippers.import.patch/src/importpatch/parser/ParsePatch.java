@@ -109,6 +109,9 @@ public class ParsePatch {
 					int length = getFileLength(fileName, proj);
 					String[] results = splitPath(fileName);
 					String packageName = results[0];
+					if(packageName.startsWith(".")){
+						packageName = packageName.substring(1);
+					}
 					fileName = results[1];
 					
 					diffStart.setAttribute("package", packageName);
