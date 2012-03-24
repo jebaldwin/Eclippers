@@ -52,11 +52,14 @@ public class ParseXMLForMarkers {
 	public static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 
 	public static void parseXML(IProject proj, IEditorPart part, String pathPrefix, String filter) {
-		if (!setListener) {
-			setListener = true;
+		//if (!setListener) {
+			//setListener = true;
 			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			window.getActivePage().addPartListener(new OpenWithMarkersListener());
-		}
+			//ResourcesPlugin.getWorkspace().addResourceChangeListener(new SaveFileWithAnnotations());
+			//ICommandService commandService = (ICommandService) window.getService(ICommandService.class);
+			//commandService.addExecutionListener(new SaveAnnotatedFile());
+		//}
 
 		currFilter = filter;
 		affected = new ArrayList<IPath>();
