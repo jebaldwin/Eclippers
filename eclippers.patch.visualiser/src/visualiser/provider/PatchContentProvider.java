@@ -160,8 +160,12 @@ public class PatchContentProvider extends SimpleContentProvider implements ISele
 					ICompilationUnit cu = (ICompilationUnit) selected;
 					proj = cu.getJavaProject().getProject();
 				} else {
-					IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
-					proj = file.getProject();
+					try {
+						IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
+						proj = file.getProject();
+					} catch(NullPointerException npe){
+						//do nothing
+					}
 				}
 			} else if (selection instanceof TextSelection) {
 				IFile file = (IFile) part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor().getEditorInput().getAdapter(IFile.class);
