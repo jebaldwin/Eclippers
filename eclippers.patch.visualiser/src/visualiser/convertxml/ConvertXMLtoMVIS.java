@@ -14,6 +14,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
@@ -24,11 +25,12 @@ public class ConvertXMLtoMVIS {
 	private static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 	private static final String CONTENT_XSL = "convertXMLtoContent.xsl";
 	private static final String MARKUP_XSL = "convertXMLtoMarkup.xsl";
+	public static String pathPrefix = "";
 
 	public static void convertContentVis(IProject proj) {
 
 		try {
-			File contentFile = new File(proj.getLocation() + File.separator + "Content.vis");
+			File contentFile = new File(proj.getLocation().toString() + File.separatorChar + pathPrefix + File.separatorChar + "Content.vis");
 			contentFile.delete();
 			contentFile.createNewFile();
 			
@@ -46,6 +48,9 @@ public class ConvertXMLtoMVIS {
             FileWriter out = new FileWriter(contentFile);
             out.write(contents);
             out.close();
+            
+            //refresh workspace
+            ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IProject.DEPTH_INFINITE, new NullProgressMonitor());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -54,7 +59,7 @@ public class ConvertXMLtoMVIS {
 	public static void convertMarkupVis(IProject proj) {
 
 		try {
-			File markupFile = new File(proj.getLocation() + File.separator + "Markup.mvis");
+			File markupFile = new File(proj.getLocation().toString() + File.separatorChar + pathPrefix + File.separatorChar + "Markup.mvis");
 			markupFile.delete();
 			markupFile.createNewFile();
 			
@@ -72,6 +77,9 @@ public class ConvertXMLtoMVIS {
             FileWriter out = new FileWriter(markupFile);
             out.write(contents);
             out.close();
+            
+            //refresh workspace
+            ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IProject.DEPTH_INFINITE, new NullProgressMonitor());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
