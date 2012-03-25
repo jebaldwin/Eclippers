@@ -178,7 +178,8 @@ public class ParseXMLForMarkers {
 													try {
 														IFile editorFile = (((FileEditorInput)refs[m].getEditorInput()).getFile());
 														String editorPath = editorFile.getProject().getLocation().toString() + File.separatorChar + editorFile.getProjectRelativePath();
-														if(editorPath.equals(checkFile.getAbsolutePath())){
+
+														if(editorPath.replace("\\", "/").equals(checkFile.getAbsolutePath().replace("\\", "/"))){
 															thisPart = refs[m].getEditor(false);
 															break;
 														}
@@ -285,7 +286,7 @@ public class ParseXMLForMarkers {
 								RemovedLine offsetElement = els[j];
 								String affpath = offsetElement.checkFile.getAbsolutePath();
 
-								if (affpath.equals(fpath))
+								if (affpath.replace("\\", "/").equals(fpath.replace("\\", "/")))
 									try {
 										int offset = doc.getLineOffset(offsetElement.lineNumber-1);
 										String currLine = doc.get(offset, 5);
