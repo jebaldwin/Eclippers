@@ -52,14 +52,14 @@ public class ParseXMLForMarkers {
 	public static String WORKSPACE_ROOT = ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString();
 
 	public static void parseXML(IProject proj, IEditorPart part, String pathPrefix, String filter) {
-		//if (!setListener) {
-			//setListener = true;
+		if (!setListener) {
+			setListener = true;
 			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			window.getActivePage().addPartListener(new OpenWithMarkersListener());
 			//ResourcesPlugin.getWorkspace().addResourceChangeListener(new SaveFileWithAnnotations());
 			//ICommandService commandService = (ICommandService) window.getService(ICommandService.class);
 			//commandService.addExecutionListener(new SaveAnnotatedFile());
-		//}
+		}
 
 		currFilter = filter;
 		affected = new ArrayList<IPath>();
@@ -189,8 +189,9 @@ public class ParseXMLForMarkers {
 													
 												}
 												
-												if(thisPart != null)
+												if(thisPart != null){
 													AddMarkers.addMarkerToFile(patchName, checkFile.getAbsolutePath(), lineNumber, proj, codeLine, true, true, patchLine, thisPart);
+												}
 												
 												RemovedLine rl = new RemovedLine(lineNumber, newLine, originalLine, codeLine, patchLine, checkFile);
 
@@ -257,6 +258,11 @@ public class ParseXMLForMarkers {
 										}
 									}
 								}
+							}
+							
+							if(filter != null){
+								//don't need to go through the rest of them if we had found our patch file already
+								break;
 							}
 						}
 					}

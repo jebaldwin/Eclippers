@@ -169,7 +169,7 @@ public class AddMarkers {
 			try {
 				return doc.getLineOffset(lineNum);
 			} catch (BadLocationException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return -1;
@@ -199,7 +199,7 @@ public class AddMarkers {
 			try {
 				return doc.getLineLength(lineNum);
 			} catch (BadLocationException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		
