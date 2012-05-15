@@ -13,7 +13,6 @@
                icon="icons/reset.gif"
                id="textmarker.actions.AddMarkerAction"
                label="Show All Patch Markers"
-               menubarPath="sampleMenu/sampleGroup"
                toolbarPath="sampleGroup"
                tooltip="Show All Patch Markers"/>
       </actionSet>
@@ -26,7 +25,6 @@
                icon="icons/delete_obj.gif"
                id="textmarker.actions.RemoveMarkersAction"
                label="Remove All Patch Markers"
-               menubarPath="sampleMenu/sampleGroup"
                toolbarPath="sampleGroup"
                tooltip="Remove All Patch Markers">
          </action>
