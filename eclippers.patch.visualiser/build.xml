@@ -6,7 +6,7 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="eclippers.patch.visualiser">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../../../Documents and Settings/jennyb/Desktop/eclipse-ind"/>
+    <property name="ECLIPSE_HOME" value="/var/lib/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
