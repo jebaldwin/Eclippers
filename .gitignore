@@ -1,0 +1,14 @@
+.metadata/
+.metadata/*
+*.*~
+*~
+*.swp
+*.swo
+.DS_Store
+bin
+goldmine_eclipse/.metadata
+/goldmine_eclipse/ruby/bespoke/lib/codex/#codex_insert.rb#
+.svn
+gen
+R.java
+target
