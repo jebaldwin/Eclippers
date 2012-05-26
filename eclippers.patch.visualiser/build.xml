@@ -30,6 +30,7 @@
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jdt.core_3.7.1.v_B76_R37x.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jdt.compiler.apt_1.0.400.v0110816-0800.jar"/>
         <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jdt.compiler.tool_1.0.100.v_B76_R37x.jar"/>
+    	<pathelement location="../eclippers.patch.editor.markers/bin"/>
     </path>
     <path id="eclippers.patch.visualiser.classpath">
         <pathelement location="bin"/>
