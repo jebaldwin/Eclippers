@@ -26,3 +26,4 @@ Export-Package: eclippers.patch.editor.extension,
  textmarker.parse
 Import-Package: com.android.ide.eclipse.adt.internal.editors,
  org.eclipse.core.expressions
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
