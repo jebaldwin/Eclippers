@@ -12,6 +12,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
+
 public class DiffJavaXMLScanner extends RuleBasedScanner {
 
 	public static final String PATCH_STRING = "___diff_";

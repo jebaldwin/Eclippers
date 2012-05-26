@@ -12,6 +12,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
+
 public class PatchedJavaXMLScanner extends RuleBasedScanner {
 
 	private String[] JavaKeys = {"abstract", "continue", "for", "new", "switch",

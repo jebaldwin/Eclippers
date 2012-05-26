@@ -3,6 +3,7 @@ package patcheditor.editors;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 import org.eclipse.ui.editors.text.TextEditor;
 
+
 public class DiffEditor extends TextEditor {
 
 	private DiffColorManager colorManager;

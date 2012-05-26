@@ -10,6 +10,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 
+
 public class DiffConfiguration extends TextSourceViewerConfiguration {
 	private RuleBasedScanner scanner;
 	private DiffColorManager colorManager;
