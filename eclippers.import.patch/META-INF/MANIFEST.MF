@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources
 Eclipse-LazyStart: true
 Export-Package: importpatch.parser
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
