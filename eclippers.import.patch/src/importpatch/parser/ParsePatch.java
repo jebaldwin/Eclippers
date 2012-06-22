@@ -101,8 +101,7 @@ public class ParsePatch {
 					//changes for git patches with /a and /b
 					if(fileName.startsWith("a/") || fileName.startsWith("b/")){
 						//TODO extra check that it was made with git just in case they have an "a" or "b" package
-						fileName = fileName.replace("a/", "/");
-						fileName = fileName.replace("b/", "/");
+						fileName = fileName.substring(2);
 					}
 					
 					// need to get length of file
@@ -218,6 +217,15 @@ public class ParsePatch {
 	public static void markAsPatched(File patchFile, String patchTitle, IProject proj, boolean patched, String pathPrefix){
 		File xmlFile = new File(proj.getLocation() + pathPrefix + File.separator + XML_FILE);
 		
+		if(!xmlFile.exists()){
+			try {
+				xmlFile.createNewFile();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
 		//mark as patched in xml
 		try{
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -297,7 +305,7 @@ public class ParsePatch {
 	}
 
 	private static int getFileLength(String fileName, IProject proj) {
-		String path = proj.getLocation() + fileName;
+		String path = proj.getLocation() + File.separator + fileName;
 		File countFile = new File(path);
 		if(!countFile.exists()){
 			//try under src directory
