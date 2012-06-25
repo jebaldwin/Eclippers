@@ -134,25 +134,27 @@ public class HistoryView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getSelectionService().addSelectionListener(new ChangeHistoryListener());
 
-		createTable(parent);
-		// viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL |
-		// SWT.V_SCROLL);
-		viewer = new TableViewer(table);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new LabelProvider());
-		// viewer.setSorter(new NameSorter());
-		// viewer.setInput(getViewSite());
-		viewer.setColumnProperties(columnNames);
-
-		IProject proj = getSelectedProject();
-		populate(proj);
-
-		// Create the help context id for the viewer's control
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "eclippers.patch.history.viewer");
-		//makeActions();
-		// hookContextMenu();
-		hookDoubleClickAction();
-		//createToolbar();
+		if(parent != null) {			
+			createTable(parent);
+			// viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL |
+			// SWT.V_SCROLL);
+			viewer = new TableViewer(table);
+			viewer.setContentProvider(new ViewContentProvider());
+			viewer.setLabelProvider(new LabelProvider());
+			// viewer.setSorter(new NameSorter());
+			// viewer.setInput(getViewSite());
+			viewer.setColumnProperties(columnNames);
+	
+			IProject proj = getSelectedProject();
+			populate(proj);
+	
+			// Create the help context id for the viewer's control
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "eclippers.patch.history.viewer");
+			//makeActions();
+			// hookContextMenu();
+			hookDoubleClickAction();
+			//createToolbar();
+		}
 	}
 
 	/**

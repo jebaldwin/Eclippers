@@ -193,7 +193,9 @@ public class ParsePatch {
 		
 		//Patch format for separator
 		int index = fileName.lastIndexOf("/");
-		String packageName = fileName.substring(0, index);
+		String packageName = "";
+		if(index > 0)
+			packageName = fileName.substring(0, index);
 		String file = fileName.substring(index + 1);
 		//removing file extension
 		//index = file.indexOf('.');
