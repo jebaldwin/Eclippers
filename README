@@ -1,1 +1,10 @@
+Eclippers provides support for patch files within Eclipse, which includes:
+
+- Editor with syntax highlighting, including navigation to where the patch will apply or has applied. 
+- Gutter annotations that show where a patch will apply (or where it has applied). 
+- Visualisation to show where a patch applies across the entire system. 
+- Language agnostic, with no compilation required. 
+
+Eclippers was originally developed out of a personal need, but was later used within tool support for building Android apps called jimu. Demo videos of part of Eclippsers can be seen here: https://www.youtube.com/watch?v=6uUGD3IJyLM
+
 You will need to either have AJDT or the Eclipse Visualiser installed in order to have the visualiser view. Alternatively, it is provided within this repository.
